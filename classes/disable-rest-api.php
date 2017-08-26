@@ -7,7 +7,12 @@
  */
 class Disable_REST_API {
 
-	private $base_file_path;    // stores 'disable-json-api/disable-json-api.php' typically
+	/**
+	 * Stores 'disable-json-api/disable-json-api.php' typically
+	 *
+	 * @var string
+	 */
+	private $base_file_path;
 
 	/**
 	 * Disable_REST_API constructor.
@@ -28,6 +33,8 @@ class Disable_REST_API {
 
 	/**
 	 * Checks for a current route being requested, and processes the whitelist
+	 *
+	 * @return void
 	 */
 	public function whitelist_routes() {
 
@@ -82,7 +89,7 @@ class Disable_REST_API {
 	 *
 	 * @param $access
 	 *
-	 * @return WP_Error
+	 * @return WP_Error|null|boolean
 	 */
 	public function only_allow_logged_in_rest_access( $access ) {
 
@@ -97,6 +104,8 @@ class Disable_REST_API {
 
 	/**
 	 * Add a menu
+	 *
+	 * @return void
 	 */
 	public function define_admin_link() {
 
@@ -114,7 +123,7 @@ class Disable_REST_API {
 	 *
 	 * @param $links
 	 *
-	 * @return mixed
+	 * @return array
 	 */
 	public function settings_link( $links ) {
 
@@ -128,6 +137,8 @@ class Disable_REST_API {
 
 	/**
 	 * Menu Callback
+	 *
+	 * @return void
 	 */
 	public function settings_page() {
 
@@ -141,6 +152,8 @@ class Disable_REST_API {
 
 	/**
 	 * Process the admin page settings form submission
+	 *
+	 * @return void
 	 */
 	private function maybe_process_settings_form() {
 
