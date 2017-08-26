@@ -83,11 +83,14 @@ $DRA_route_whitelist = get_option( 'DRA_route_whitelist' );
 <?php
 /**
  * The REST API lives at a different path when pretty permalinks are not in use
+ *
+ * /wp-json lives at the root of the website so we use home_url()
+ * /?rest_route=/ lives at the root of the wordpress install so we use site_url()
  */
 function DRA_get_rest_api_path() {
-    $restPath = get_site_url() . "/wp-json/";
+    $restPath = home_url() . "/wp-json/";
 	if ( empty( get_option( 'permalink_structure' ) ) ) {
-		$restPath = get_site_url() . "/?rest_route=/";
+		$restPath = site_url() . "/?rest_route=/";
 	}
 
 	return $restPath;
