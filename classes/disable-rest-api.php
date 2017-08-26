@@ -134,7 +134,7 @@ class Disable_REST_API {
 		$this->maybe_process_settings_form();
 
 		// Render the settings template
-		include( dirname( __FILE__ ) . "/../admin.php" );
+		include( __DIR__ . "/../admin.php" );
 
 	}
 
