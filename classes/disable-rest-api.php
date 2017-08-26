@@ -15,7 +15,7 @@ class Disable_REST_API {
 	 *
 	 * @param $path
 	 */
-	function __construct( $path ) {
+	public function __construct( $path ) {
 
 		$this->initialize_variables( $path );
 
@@ -31,7 +31,7 @@ class Disable_REST_API {
 	/**
 	 * Checks for a current route being requested, and processes the whitelist
 	 */
-	function whitelist_routes() {
+	public function whitelist_routes() {
 
 		$currentRoute = $GLOBALS['wp']->query_vars['rest_route'];
 		if ( ! empty( $currentRoute ) && ! $this->is_whitelisted( $currentRoute ) ) {
@@ -48,7 +48,7 @@ class Disable_REST_API {
 	 *
 	 * @return mixed
 	 */
-	function is_whitelisted( $currentRoute ) {
+	private function is_whitelisted( $currentRoute ) {
 
 		if ( get_option( 'DRA_route_whitelist' ) ) {
 			return array_reduce( get_option( 'DRA_route_whitelist' ), function ( $isMatched, $pattern ) use ( $currentRoute ) {
