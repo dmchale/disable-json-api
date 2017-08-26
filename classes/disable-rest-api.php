@@ -46,13 +46,13 @@ class Disable_REST_API {
 	 *
 	 * @param $currentRoute
 	 *
-	 * @return mixed
+	 * @return boolean
 	 */
 	private function is_whitelisted( $currentRoute ) {
 
 		if ( get_option( 'DRA_route_whitelist' ) ) {
 			return array_reduce( get_option( 'DRA_route_whitelist' ), function ( $isMatched, $pattern ) use ( $currentRoute ) {
-				return $isMatched || preg_match( '@^' . htmlspecialchars_decode( $pattern ) . '$@i', $currentRoute );
+				return $isMatched || (bool) preg_match( '@^' . htmlspecialchars_decode( $pattern ) . '$@i', $currentRoute );
 			}, false );
 		}
 
