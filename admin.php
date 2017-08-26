@@ -23,7 +23,7 @@ $DRA_route_whitelist = get_option( 'DRA_route_whitelist' );
             var formOutput = '';
             var DRA_route_whitelist = <?php echo ( $DRA_route_whitelist ) ? json_encode( $DRA_route_whitelist ) : "[]"; ?>;
 
-            console.log(DRA_route_whitelist);
+            //console.log(DRA_route_whitelist);
 
             var restPath = '<?php echo DRA_get_rest_api_path(); ?>';
             $.getJSON(restPath, '', function (data) {
@@ -38,7 +38,7 @@ $DRA_route_whitelist = get_option( 'DRA_route_whitelist' );
                     var route = key;    // individual route, used as checkbox values
                     var routeDisplay = route.replace(/</gi, "&lt;").replace(/>/gi, "&gt;");     // HTML-encode lt & gt tags for display on page
                     $.each(val, function (key2, curNamespace) {
-                        console.log(route + " ... " + DRA_route_whitelist.indexOf(routeDisplay));
+                        //console.log(route + " ... " + DRA_route_whitelist.indexOf(routeDisplay));
                         var checkedProp = ( -1 != DRA_route_whitelist.indexOf(routeDisplay) ) ? " checked='checked' " : "";
                         if ('namespace' == key2 && '' != curNamespace) {    // Ignore top-level endpoint(s) by excluding empty strings
                             if ('' == lastNamespace || curNamespace != lastNamespace) {
@@ -85,9 +85,10 @@ $DRA_route_whitelist = get_option( 'DRA_route_whitelist' );
  * The REST API lives at a different path when pretty permalinks are not in use
  */
 function DRA_get_rest_api_path() {
+    $restPath = get_site_url() . "/wp-json/";
 	if ( empty( get_option( 'permalink_structure' ) ) ) {
-		return get_site_url() . "/?rest_route=/";
-	} else {
-		return get_site_url() . "/wp-json/";
+		$restPath = get_site_url() . "/?rest_route=/";
 	}
+
+	return $restPath;
 }
