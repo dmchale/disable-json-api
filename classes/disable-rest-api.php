@@ -8,6 +8,7 @@
 class Disable_REST_API {
 
 	const MENU_SLUG = 'disable_rest_api_settings';
+	const CAPABILITY = 'manage_options';
 
 	/**
 	 * Stores 'disable-json-api/disable-json-api.php' typically
@@ -111,7 +112,7 @@ class Disable_REST_API {
 	 */
 	public function define_admin_link() {
 
-		add_options_page( 'Disable REST API Settings', 'Disable REST API', 'manage_options', self::MENU_SLUG, array(
+		add_options_page( 'Disable REST API Settings', 'Disable REST API', self::CAPABILITY, self::MENU_SLUG, array(
 			&$this,
 			'settings_page'
 		) );
@@ -160,6 +161,10 @@ class Disable_REST_API {
 	private function maybe_process_settings_form() {
 
 		if ( ! ( isset( $_POST['_wpnonce'] ) && check_admin_referer( 'DRA_admin_nonce' ) ) ) {
+			return;
+		}
+
+		if ( ! current_user_can( self::CAPABILITY ) ) {
 			return;
 		}
 
