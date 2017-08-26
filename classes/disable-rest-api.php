@@ -60,13 +60,20 @@ class Disable_REST_API {
 	 */
 	private function is_whitelisted( $currentRoute ) {
 
-		if ( get_option( 'DRA_route_whitelist' ) ) {
-			return array_reduce( get_option( 'DRA_route_whitelist' ), function ( $isMatched, $pattern ) use ( $currentRoute ) {
-				return $isMatched || (bool) preg_match( '@^' . htmlspecialchars_decode( $pattern ) . '$@i', $currentRoute );
-			}, false );
-		}
+		return array_reduce( $this->get_route_whitelist_option(), function ( $isMatched, $pattern ) use ( $currentRoute ) {
+			return $isMatched || (bool) preg_match( '@^' . htmlspecialchars_decode( $pattern ) . '$@i', $currentRoute );
+		}, false );
 
-		return false;
+	}
+
+	/**
+	 * Get `DRA_route_whitelist` option array from database
+	 *
+	 * @return array
+	 */
+	private function get_route_whitelist_option() {
+
+		return (array) get_option( 'DRA_route_whitelist', array() );
 
 	}
 
