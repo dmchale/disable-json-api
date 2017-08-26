@@ -168,22 +168,19 @@ class Disable_REST_API {
 			return;
 		}
 
-		// If resetting, clear the option and exit the function
-		if ( isset( $_POST['reset'] ) ) {
-			delete_option( 'DRA_route_whitelist' );
-			return;
-		}
-
-		// Catch the routes that should be whitelisted, and save them to the Options table
+		// Catch the routes that should be whitelisted
 		$rest_routes = ( isset( $_POST['rest_routes'] ) )
 			? wp_unslash( array_map( 'htmlspecialchars', $_POST['rest_routes'] ) )
 			: null;
 
-		if ( empty($rest_routes) ) {
+		// If resetting or whitelist is empty, clear the option and exit the function
+		if ( empty($rest_routes) || isset( $_POST['reset'] ) ) {
 			delete_option( 'DRA_route_whitelist' );
-		} else {
-			update_option( 'DRA_route_whitelist', $rest_routes );
+			return;
 		}
+
+		// Save whitelist to the Options table
+		update_option( 'DRA_route_whitelist', $rest_routes );
 
 	}
 
