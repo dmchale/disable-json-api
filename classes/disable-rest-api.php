@@ -138,9 +138,7 @@ class Disable_REST_API {
 	 */
 	public function settings_page() {
 
-		if ( isset( $_POST['_wpnonce'] ) && check_admin_referer( 'DRA_admin_nonce' ) ) {
-			$this->process_settings_form();
-		}
+		$this->maybe_process_settings_form();
 
 		// Render the settings template
 		include( dirname( __FILE__ ) . "/../admin.php" );
@@ -151,7 +149,11 @@ class Disable_REST_API {
 	/**
 	 * Process the admin page settings form submission
 	 */
-	private function process_settings_form() {
+	private function maybe_process_settings_form() {
+
+		if ( ! ( isset( $_POST['_wpnonce'] ) && check_admin_referer( 'DRA_admin_nonce' ) ) ) {
+			return;
+		}
 
 		// If resetting, clear the option and exit the function
 		if ( isset( $_POST['reset'] ) ) {
@@ -166,5 +168,6 @@ class Disable_REST_API {
 		update_option( 'DRA_route_whitelist', $rest_routes );
 
 	}
+
 
 }
