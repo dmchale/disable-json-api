@@ -58,6 +58,7 @@ disabled so long as this plugin is active. Namespaces and routes may be whitelis
 * Tested for WP v4.8
 * Added settings screen
 * Site Admins may now whitelist routes that they wish to allow unauthenticated access to
+* Props to @tangrufus for some of the code which made its way into this release
 
 = 1.3 =
 * Tested for WP v4.7
