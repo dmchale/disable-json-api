@@ -31,11 +31,23 @@ class Disable_REST_API {
 	 */
 	public function whitelist_routes() {
 
-		$currentRoute = $GLOBALS['wp']->query_vars['rest_route'];
+		$currentRoute = $this->get_current_route();
 		if ( ! empty( $currentRoute ) && ! $this->is_whitelisted( $currentRoute ) ) {
 			add_filter( 'rest_authentication_errors', array( &$this, 'only_allow_logged_in_rest_access' ), 99 );
 		}
 
+	}
+
+	/**
+	 * Current REST route getter.
+	 *
+	 * @return string
+	 */
+	private function get_current_route()
+	{
+		return empty($GLOBALS['wp']->query_vars['rest_route']) ?
+			'' :
+			untrailingslashit($GLOBALS['wp']->query_vars['rest_route']);
 	}
 
 
