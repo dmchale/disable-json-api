@@ -7,7 +7,6 @@
  */
 class Disable_REST_API {
 
-	private $is_loaded = false;
 	private $base_file_path;    // stores 'disable-json-api/disable-json-api.php' typically
 
 	/**
@@ -17,7 +16,8 @@ class Disable_REST_API {
 	 */
 	public function __construct( $path ) {
 
-		$this->initialize_variables( $path );
+		// Set variable so the class knows how to reference the plugin
+		$this->base_file_path = plugin_basename( $path );
 
 		add_action( 'admin_menu', array( &$this, 'define_admin_link' ) );
 
@@ -76,30 +76,6 @@ class Disable_REST_API {
 		return (array) get_option( 'DRA_route_whitelist', array() );
 
 	}
-
-
-	/**
-	 * Sets default values for all class variables
-	 *
-	 * @param $path
-	 *
-	 * @return boolean
-	 */
-	private function initialize_variables( $path ) {
-
-		// Only should be run once per page load
-		if ( $this->is_loaded ) {
-			return false;
-		}
-		$this->is_loaded = true;
-
-		// Set variable so the class knows how to reference the plugin
-		$this->base_file_path = plugin_basename( $path );
-
-		return true;
-
-	}
-
 
 	/**
 	 * Returning an authentication error if a user who is not logged in tries to query the REST API
