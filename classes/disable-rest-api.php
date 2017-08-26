@@ -7,6 +7,8 @@
  */
 class Disable_REST_API {
 
+	const MENU_SLUG = 'disable_rest_api_settings';
+
 	/**
 	 * Stores 'disable-json-api/disable-json-api.php' typically
 	 *
@@ -109,7 +111,7 @@ class Disable_REST_API {
 	 */
 	public function define_admin_link() {
 
-		add_options_page( 'Disable REST API Settings', 'Disable REST API', 'manage_options', 'disable_rest_api_settings', array(
+		add_options_page( 'Disable REST API Settings', 'Disable REST API', 'manage_options', self::MENU_SLUG, array(
 			&$this,
 			'settings_page'
 		) );
@@ -127,7 +129,7 @@ class Disable_REST_API {
 	 */
 	public function settings_link( $links ) {
 
-		$settings_url = admin_url() . "options-general.php?page=disable_rest_api_settings";
+		$settings_url = menu_page_url(self::MENU_SLUG);
 		$settings_link = "<a href='$settings_url'>Settings</a>";
 		array_unshift( $links, $settings_link );
 
