@@ -19,9 +19,7 @@ class Disable_REST_API {
 
 		$this->initialize_variables( $path );
 
-		if ( is_admin() ) {
-			add_action( 'admin_menu', array( &$this, 'define_admin_link' ) );
-		}
+		add_action( 'admin_menu', array( &$this, 'define_admin_link' ) );
 
 		add_filter( 'rest_authentication_errors', array( &$this, 'whitelist_routes' ), 1 );
 
