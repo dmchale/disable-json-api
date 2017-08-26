@@ -150,15 +150,20 @@ class Disable_REST_API {
 
 		// If resetting, clear the option and exit the function
 		if ( isset( $_POST['reset'] ) ) {
-			update_option( 'DRA_route_whitelist', '' );
+			delete_option( 'DRA_route_whitelist' );
 			return;
 		}
 
 		// Catch the routes that should be whitelisted, and save them to the Options table
 		$rest_routes = ( isset( $_POST['rest_routes'] ) )
 			? wp_unslash( array_map( 'htmlspecialchars', $_POST['rest_routes'] ) )
-			: '';
-		update_option( 'DRA_route_whitelist', $rest_routes );
+			: null;
+
+		if ( empty($rest_routes) ) {
+			delete_option( 'DRA_route_whitelist' );
+		} else {
+			update_option( 'DRA_route_whitelist', $rest_routes );
+		}
 
 	}
 
