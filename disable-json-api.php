@@ -9,6 +9,11 @@
  * License: GPL2+
  */
 
+// If this file is called directly, abort.
+if (! defined('WPINC')) {
+    die;
+}
+
 // Remove REST API info from head and headers
 remove_action( 'xmlrpc_rsd_apis', 'rest_output_rsd' );
 remove_action( 'wp_head', 'rest_output_link_wp_head', 10 );
