@@ -53,11 +53,10 @@ class Disable_REST_API {
 	 *
 	 * @return string
 	 */
-	private function get_current_route()
-	{
-		return empty($GLOBALS['wp']->query_vars['rest_route']) ?
+	private function get_current_route() {
+		return empty( $GLOBALS['wp']->query_vars['rest_route'] ) ?
 			'' :
-			untrailingslashit($GLOBALS['wp']->query_vars['rest_route']);
+			untrailingslashit( $GLOBALS['wp']->query_vars['rest_route'] );
 	}
 
 
@@ -130,7 +129,7 @@ class Disable_REST_API {
 	 */
 	public function settings_link( $links ) {
 
-		$settings_url = menu_page_url(self::MENU_SLUG);
+		$settings_url  = menu_page_url( self::MENU_SLUG );
 		$settings_link = "<a href='$settings_url'>Settings</a>";
 		array_unshift( $links, $settings_link );
 
@@ -174,7 +173,7 @@ class Disable_REST_API {
 			: null;
 
 		// If resetting or whitelist is empty, clear the option and exit the function
-		if ( empty($rest_routes) || isset( $_POST['reset'] ) ) {
+		if ( empty( $rest_routes ) || isset( $_POST['reset'] ) ) {
 			delete_option( 'DRA_route_whitelist' );
 			return;
 		}

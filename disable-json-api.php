@@ -10,8 +10,8 @@
  */
 
 // If this file is called directly, abort.
-if (! defined('WPINC')) {
-    die;
+if ( ! defined( 'WPINC' ) ) {
+	die;
 }
 
 // Remove REST API info from head and headers

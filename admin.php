@@ -88,7 +88,7 @@ $DRA_route_whitelist = get_option( 'DRA_route_whitelist' );
  * /?rest_route=/ lives at the root of the wordpress install so we use site_url()
  */
 function DRA_get_rest_api_path() {
-    $restPath = home_url() . "/wp-json/";
+	$restPath = home_url() . "/wp-json/";
 	if ( empty( get_option( 'permalink_structure' ) ) ) {
 		$restPath = site_url() . "/?rest_route=/";
 	}
