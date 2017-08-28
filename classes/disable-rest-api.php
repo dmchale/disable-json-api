@@ -7,21 +7,27 @@
  */
 class Disable_REST_API {
 
-	private $is_loaded = false;
-	private $base_file_path;    // stores 'disable-json-api/disable-json-api.php' typically
+	const MENU_SLUG = 'disable_rest_api_settings';
+	const CAPABILITY = 'manage_options';
+
+	/**
+	 * Stores 'disable-json-api/disable-json-api.php' typically
+	 *
+	 * @var string
+	 */
+	private $base_file_path;
 
 	/**
 	 * Disable_REST_API constructor.
 	 *
 	 * @param $path
 	 */
-	function __construct( $path ) {
+	public function __construct( $path ) {
 
-		$this->initialize_variables( $path );
+		// Set variable so the class knows how to reference the plugin
+		$this->base_file_path = plugin_basename( $path );
 
-		if ( is_admin() ) {
-			add_action( 'admin_menu', array( &$this, 'define_admin_link' ) );
-		}
+		add_action( 'admin_menu', array( &$this, 'define_admin_link' ) );
 
 		add_filter( 'rest_authentication_errors', array( &$this, 'whitelist_routes' ), 1 );
 
@@ -30,14 +36,28 @@ class Disable_REST_API {
 
 	/**
 	 * Checks for a current route being requested, and processes the whitelist
+	 *
+	 * @return void
 	 */
-	function whitelist_routes() {
+	public function whitelist_routes() {
 
-		$currentRoute = $GLOBALS['wp']->query_vars['rest_route'];
+		$currentRoute = $this->get_current_route();
 		if ( ! empty( $currentRoute ) && ! $this->is_whitelisted( $currentRoute ) ) {
 			add_filter( 'rest_authentication_errors', array( &$this, 'only_allow_logged_in_rest_access' ), 99 );
 		}
 
+	}
+
+	/**
+	 * Current REST route getter.
+	 *
+	 * @return string
+	 */
+	private function get_current_route()
+	{
+		return empty($GLOBALS['wp']->query_vars['rest_route']) ?
+			'' :
+			untrailingslashit($GLOBALS['wp']->query_vars['rest_route']);
 	}
 
 
@@ -46,50 +66,33 @@ class Disable_REST_API {
 	 *
 	 * @param $currentRoute
 	 *
-	 * @return mixed
-	 */
-	function is_whitelisted( $currentRoute ) {
-
-		if ( get_option( 'DRA_route_whitelist' ) ) {
-			return array_reduce( get_option( 'DRA_route_whitelist' ), function ( $isMatched, $pattern ) use ( $currentRoute ) {
-				return $isMatched || preg_match( '@^' . htmlspecialchars_decode( $pattern ) . '$@i', $currentRoute );
-			}, false );
-		}
-
-		return false;
-
-	}
-
-
-	/**
-	 * Sets default values for all class variables
-	 *
-	 * @param $path
-	 *
 	 * @return boolean
 	 */
-	private function initialize_variables( $path ) {
+	private function is_whitelisted( $currentRoute ) {
 
-		// Only should be run once per page load
-		if ( $this->is_loaded ) {
-			return false;
-		}
-		$this->is_loaded = true;
-
-		// Set variable so the class knows how to reference the plugin
-		$this->base_file_path = plugin_basename( $path );
-
-		return true;
+		return array_reduce( $this->get_route_whitelist_option(), function ( $isMatched, $pattern ) use ( $currentRoute ) {
+			return $isMatched || (bool) preg_match( '@^' . htmlspecialchars_decode( $pattern ) . '$@i', $currentRoute );
+		}, false );
 
 	}
 
+	/**
+	 * Get `DRA_route_whitelist` option array from database
+	 *
+	 * @return array
+	 */
+	private function get_route_whitelist_option() {
+
+		return (array) get_option( 'DRA_route_whitelist', array() );
+
+	}
 
 	/**
 	 * Returning an authentication error if a user who is not logged in tries to query the REST API
 	 *
 	 * @param $access
 	 *
-	 * @return WP_Error
+	 * @return WP_Error|null|boolean
 	 */
 	public function only_allow_logged_in_rest_access( $access ) {
 
@@ -104,10 +107,12 @@ class Disable_REST_API {
 
 	/**
 	 * Add a menu
+	 *
+	 * @return void
 	 */
 	public function define_admin_link() {
 
-		add_options_page( 'Disable REST API Settings', 'Disable REST API', 'manage_options', 'disable_rest_api_settings', array(
+		add_options_page( 'Disable REST API Settings', 'Disable REST API', self::CAPABILITY, self::MENU_SLUG, array(
 			&$this,
 			'settings_page'
 		) );
@@ -121,11 +126,11 @@ class Disable_REST_API {
 	 *
 	 * @param $links
 	 *
-	 * @return mixed
+	 * @return array
 	 */
 	public function settings_link( $links ) {
 
-		$settings_url = admin_url() . "options-general.php?page=disable_rest_api_settings";
+		$settings_url = menu_page_url(self::MENU_SLUG);
 		$settings_link = "<a href='$settings_url'>Settings</a>";
 		array_unshift( $links, $settings_link );
 
@@ -135,19 +140,23 @@ class Disable_REST_API {
 
 	/**
 	 * Menu Callback
+	 *
+	 * @return void
 	 */
 	public function settings_page() {
 
 		$this->maybe_process_settings_form();
 
 		// Render the settings template
-		include( dirname( __FILE__ ) . "/../admin.php" );
+		include( __DIR__ . "/../admin.php" );
 
 	}
 
 
 	/**
 	 * Process the admin page settings form submission
+	 *
+	 * @return void
 	 */
 	private function maybe_process_settings_form() {
 
@@ -155,16 +164,22 @@ class Disable_REST_API {
 			return;
 		}
 
-		// If resetting, clear the option and exit the function
-		if ( isset( $_POST['reset'] ) ) {
-			update_option( 'DRA_route_whitelist', '' );
+		if ( ! current_user_can( self::CAPABILITY ) ) {
 			return;
 		}
 
-		// Catch the routes that should be whitelisted, and save them to the Options table
+		// Catch the routes that should be whitelisted
 		$rest_routes = ( isset( $_POST['rest_routes'] ) )
 			? wp_unslash( array_map( 'htmlspecialchars', $_POST['rest_routes'] ) )
-			: '';
+			: null;
+
+		// If resetting or whitelist is empty, clear the option and exit the function
+		if ( empty($rest_routes) || isset( $_POST['reset'] ) ) {
+			delete_option( 'DRA_route_whitelist' );
+			return;
+		}
+
+		// Save whitelist to the Options table
 		update_option( 'DRA_route_whitelist', $rest_routes );
 
 	}
