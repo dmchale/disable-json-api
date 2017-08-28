@@ -23,7 +23,7 @@ remove_action( 'template_redirect', 'rest_output_link_header', 11 );
 // For versions of WordPress < 4.7, disable the REST API via filters
 if ( version_compare( get_bloginfo( 'version' ), '4.7', '>=' ) ) {
 	require_once( plugin_dir_path( __FILE__ ) . 'classes/disable-rest-api.php' );
-	$dra_object = new Disable_REST_API( __FILE__ );
+	new Disable_REST_API( __FILE__ );
 } else {
 	require_once( plugin_dir_path( __FILE__ ) . 'functions/legacy.php' );
 	DRA_Disable_Via_Filters();
