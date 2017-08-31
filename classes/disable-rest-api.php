@@ -27,12 +27,23 @@ class Disable_REST_API {
 		// Set variable so the class knows how to reference the plugin
 		$this->base_file_path = plugin_basename( $path );
 
+		add_action( 'plugins_loaded', array( &$this, 'load_plugin_textdomain' ) );
+
 		add_action( 'admin_menu', array( &$this, 'define_admin_link' ) );
 
 		add_filter( 'rest_authentication_errors', array( &$this, 'whitelist_routes' ), 1 );
 
 	}
 
+
+	/**
+	 * Load textdomain for older WordPress installs. This isn't necessary as of WordPress 4.6+
+	 */
+	public function load_plugin_textdomain() {
+		if ( version_compare( get_bloginfo( 'version' ), '4.6', '<' ) ) {
+			load_plugin_textdomain( 'disable-json-api', false, $this->base_file_path . '/languages/' );
+		}
+	}
 
 	/**
 	 * Checks for a current route being requested, and processes the whitelist
