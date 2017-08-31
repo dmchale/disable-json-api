@@ -89,7 +89,8 @@ $DRA_route_whitelist = get_option( 'DRA_route_whitelist' );
  */
 function DRA_get_rest_api_path() {
 	$restPath = home_url() . "/wp-json/";
-	if ( empty( get_option( 'permalink_structure' ) ) ) {
+	$permalink_structure = get_option( 'permalink_structure' );
+	if ( empty( $permalink_structure ) ) {
 		$restPath = site_url() . "/?rest_route=/";
 	}
 
