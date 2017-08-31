@@ -181,9 +181,9 @@ class Disable_REST_API {
 		}
 
 		// Catch the routes that should be whitelisted
-		$rest_routes = ( isset( $_POST['rest_routes'] ) )
-			? wp_unslash( array_map( 'htmlspecialchars', $_POST['rest_routes'] ) )
-			: null;
+		$rest_routes = ( isset( $_POST['rest_routes'] ) ) ?
+			wp_unslash( array_map( 'htmlspecialchars', $_POST['rest_routes'] ) ) :
+			null;
 
 		// If resetting or whitelist is empty, clear the option and exit the function
 		if ( empty( $rest_routes ) || isset( $_POST['reset'] ) ) {
