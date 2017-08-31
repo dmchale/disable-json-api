@@ -75,7 +75,7 @@ $DRA_route_whitelist = get_option( 'DRA_route_whitelist' );
 
             <div id="DRA_target"></div>
 
-			<?php @submit_button(); ?>
+			<?php submit_button(); ?>
             <input type="submit" name="reset"
                    value="<?php echo esc_attr__( "Reset Whitelisted Routes", "disable-json-api" ); ?>"
                    onclick="return confirm('<?php echo esc_attr__( "Are you sure you wish to clear all whitelisted rules?", "disable-json-api" ); ?>');">
