@@ -41,8 +41,8 @@ class Disable_REST_API {
 	 */
 	public function whitelist_routes() {
 
-		$currentRoute = $this->get_current_route();
-		if ( ! empty( $currentRoute ) && ! $this->is_whitelisted( $currentRoute ) ) {
+		$current_route = $this->get_current_route();
+		if ( ! empty( $current_route ) && ! $this->is_whitelisted( $current_route ) ) {
 			add_filter( 'rest_authentication_errors', array( &$this, 'only_allow_logged_in_rest_access' ), 99 );
 		}
 
@@ -54,9 +54,11 @@ class Disable_REST_API {
 	 * @return string
 	 */
 	private function get_current_route() {
-		return empty( $GLOBALS['wp']->query_vars['rest_route'] ) ?
-			'' :
-			untrailingslashit( $GLOBALS['wp']->query_vars['rest_route'] );
+		$rest_route = $GLOBALS['wp']->query_vars['rest_route'];
+
+		return ( empty( $rest_route ) || '/' == $rest_route ) ?
+			$rest_route :
+			untrailingslashit( $rest_route );
 	}
 
 
@@ -175,6 +177,7 @@ class Disable_REST_API {
 		// If resetting or whitelist is empty, clear the option and exit the function
 		if ( empty( $rest_routes ) || isset( $_POST['reset'] ) ) {
 			delete_option( 'DRA_route_whitelist' );
+
 			return;
 		}
 
