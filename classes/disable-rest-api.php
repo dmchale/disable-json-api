@@ -98,7 +98,7 @@ class Disable_REST_API {
 	public function only_allow_logged_in_rest_access( $access ) {
 
 		if ( ! is_user_logged_in() ) {
-			return new WP_Error( 'rest_cannot_access', __( 'DRA: Only authenticated users can access the REST API.', 'disable-json-api' ), array( 'status' => rest_authorization_required_code() ) );
+			return new WP_Error( 'rest_cannot_access', esc_html__( 'DRA: Only authenticated users can access the REST API.', 'disable-json-api' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		return $access;
@@ -113,7 +113,7 @@ class Disable_REST_API {
 	 */
 	public function define_admin_link() {
 
-		add_options_page( 'Disable REST API Settings', 'Disable REST API', self::CAPABILITY, self::MENU_SLUG, array(
+		add_options_page( esc_html__( 'Disable REST API Settings', 'disable-json-api' ), esc_html__( 'Disable REST API', 'disable-json-api' ), self::CAPABILITY, self::MENU_SLUG, array(
 			&$this,
 			'settings_page'
 		) );
@@ -132,7 +132,7 @@ class Disable_REST_API {
 	public function settings_link( $links ) {
 
 		$settings_url  = menu_page_url( self::MENU_SLUG );
-		$settings_link = "<a href='$settings_url'>Settings</a>";
+		$settings_link = "<a href='$settings_url'>" . esc_html__( "Settings", "disable-json-api" ) . "</a>";
 		array_unshift( $links, $settings_link );
 
 		return $links;

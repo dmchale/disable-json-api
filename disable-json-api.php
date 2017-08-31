@@ -6,6 +6,8 @@
  * Version: 1.4
  * Author: Dave McHale
  * Author URI: http://www.binarytemplar.com
+ * Text Domain: disable-json-api
+ * Domain Path: /languages
  * License: GPL2+
  */
 

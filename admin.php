@@ -64,9 +64,11 @@ $DRA_route_whitelist = get_option( 'DRA_route_whitelist' );
     </script>
 
     <div class="wrap">
-        <h1>Disable REST API</h1>
-        <p><?php echo __( "By default, this plugin ensures that the entire REST API is protected from non-authenticated users. You may use this page to specify which endpoints should be allowed to behave as normal.", 'disable-json-api' ); ?></p>
-        <p><?php echo __( "<strong>IMPORTANT NOTE:</strong> Checking a box merely restores default functionality to an endpoint. Other authentication and/or permissions may still be required for access, or other themes/plugins may also affect access to those endpoints.", 'disable-json-api' ); ?></p>
+        <h1><?php echo esc_html__( "Disable REST API", "disable-json-api" ); ?></h1>
+        <p><?php echo esc_html__( "By default, this plugin ensures that the entire REST API is protected from non-authenticated users. You may use this page to specify which endpoints should be allowed to behave as normal.", "disable-json-api" ); ?></p>
+        <p>
+            <strong><?php echo esc_html__( "IMPORTANT NOTE:", "disable-json-api" ); ?></strong> <?php echo esc_html__( "Checking a box merely restores default functionality to an endpoint . Other authentication and/or permissions may still be required for access, or other themes / plugins may also affect access to those endpoints . ", "disable - json - api" ); ?>
+        </p>
 
         <form method="post" action="" id="DRA_form">
 			<?php wp_nonce_field( 'DRA_admin_nonce' ); ?>
@@ -75,8 +77,8 @@ $DRA_route_whitelist = get_option( 'DRA_route_whitelist' );
 
 			<?php @submit_button(); ?>
             <input type="submit" name="reset"
-                   value="<?php echo __( "Reset Whitelisted Routes", "disable-json-api" ); ?>"
-                   onclick="return confirm('<?php echo __( "Are you sure you wish to clear all whitelisted rules?", "disable-json-api" ); ?>');">
+                   value="<?php echo esc_attr__( "Reset Whitelisted Routes", "disable-json-api" ); ?>"
+                   onclick="return confirm('<?php echo esc_attr__( "Are you sure you wish to clear all whitelisted rules?", "disable-json-api" ); ?>');">
         </form>
     </div>
 
