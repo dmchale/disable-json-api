@@ -1,100 +1,91 @@
-<?php
-$DRA_route_whitelist = get_option( 'DRA_route_whitelist' );
-?>
+<style>
+    #DRA_container ul li {
+        padding-left: 20px;
+    }
 
-    <style>
-        #DRA_target ul li {
-            padding-left: 20px;
+    #DRA_container em {
+        font-size: 0.8em;
+    }
+</style>
+
+<script>
+    function dra_namespace_click(namespace, id) {
+        if (jQuery('#dra_namespace_' + id).is(":checked")) {
+            jQuery("input[data-namespace='" + namespace + "']").prop('checked', true);
+        } else {
+            jQuery("input[data-namespace='" + namespace + "']").prop('checked', false);
         }
-    </style>
+    };
+</script>
 
-    <script>
-        function dra_namespace_click(namespace, id) {
-            if (jQuery('#dra_namespace_' + id).is(":checked")) {
-                jQuery("input[data-namespace='" + namespace + "']").prop('checked', true);
-            } else {
-                jQuery("input[data-namespace='" + namespace + "']").prop('checked', false);
-            }
-        };
+<div class="wrap">
+    <h1><?php echo esc_html__( "Disable REST API", "disable-json-api" ); ?></h1>
+    <p><?php echo esc_html__( "By default, this plugin ensures that the entire REST API is protected from non-authenticated users. You may use this page to specify which endpoints should be allowed to behave as normal.", "disable-json-api" ); ?></p>
+    <p>
+        <strong><?php echo esc_html__( "IMPORTANT NOTE:", "disable-json-api" ); ?></strong> <?php echo esc_html__( "Checking a box merely restores default functionality to an endpoint . Other authentication and/or permissions may still be required for access, or other themes / plugins may also affect access to those endpoints. ", "disable - json - api" ); ?>
+    </p>
 
-        jQuery(function ($) {
+    <form method="post" action="" id="DRA_form">
+		<?php wp_nonce_field( 'DRA_admin_nonce' ); ?>
 
-            var lastNamespace = '';
-            var formOutput = '';
-            var DRA_route_whitelist = <?php echo ( $DRA_route_whitelist ) ? json_encode( $DRA_route_whitelist ) : "[]"; ?>;
+        <div id="DRA_container"><?php DRA_display_route_checkboxes(); ?></div>
 
-            //console.log(DRA_route_whitelist);
-
-            var restPath = '<?php echo DRA_get_rest_api_path(); ?>';
-            $.getJSON(restPath, '', function (data) {
-
-                var routes = data["routes"];        // get all routes from JSON
-
-                /*
-                 * Loop through all detected routes
-                 */
-                var loopCounter = 0;
-                $.each(routes, function (key, val) {
-                    var route = key;    // individual route, used as checkbox values
-                    var routeDisplay = route.replace(/</gi, "&lt;").replace(/>/gi, "&gt;");     // HTML-encode lt & gt tags for display on page
-                    $.each(val, function (key2, curNamespace) {
-                        //console.log(route + " ... " + DRA_route_whitelist.indexOf(routeDisplay));
-                        var checkedProp = ( -1 != DRA_route_whitelist.indexOf(routeDisplay) ) ? " checked='checked' " : "";
-                        if ('namespace' == key2 && '' != curNamespace) {    // Ignore top-level endpoint(s) by excluding empty strings
-                            if ('' == lastNamespace || curNamespace != lastNamespace) {
-                                if ('' != lastNamespace)
-                                    formOutput += "</ul>";
-                                formOutput += "<h2><label><input name='rest_routes[]' value='" + route + "' type='checkbox' id='dra_namespace_" + loopCounter + "' onclick='dra_namespace_click(\"" + curNamespace + "\", " + loopCounter + ")' " + checkedProp + ">&nbsp;" + routeDisplay + "</label></h2><ul>";
-                            } else {
-                                formOutput += "<li><label><input name='rest_routes[]' value='" + route + "' type='checkbox' data-namespace='" + curNamespace + "' " + checkedProp + ">&nbsp;" + routeDisplay + "</label></li>";
-                            }
-                            lastNamespace = curNamespace;
-                        }
-                    });
-                    loopCounter++;
-                });
-
-                formOutput += "</ul>";
-
-                $('#DRA_target').html(formOutput);
-
-            });
-
-        });
-    </script>
-
-    <div class="wrap">
-        <h1><?php echo esc_html__( "Disable REST API", "disable-json-api" ); ?></h1>
-        <p><?php echo esc_html__( "By default, this plugin ensures that the entire REST API is protected from non-authenticated users. You may use this page to specify which endpoints should be allowed to behave as normal.", "disable-json-api" ); ?></p>
-        <p>
-            <strong><?php echo esc_html__( "IMPORTANT NOTE:", "disable-json-api" ); ?></strong> <?php echo esc_html__( "Checking a box merely restores default functionality to an endpoint . Other authentication and/or permissions may still be required for access, or other themes / plugins may also affect access to those endpoints . ", "disable - json - api" ); ?>
-        </p>
-
-        <form method="post" action="" id="DRA_form">
-			<?php wp_nonce_field( 'DRA_admin_nonce' ); ?>
-
-            <div id="DRA_target"></div>
-
-			<?php submit_button(); ?>
-            <input type="submit" name="reset"
-                   value="<?php echo esc_attr__( "Reset Whitelisted Routes", "disable-json-api" ); ?>"
-                   onclick="return confirm('<?php echo esc_attr__( "Are you sure you wish to clear all whitelisted rules?", "disable-json-api" ); ?>');">
-        </form>
-    </div>
+		<?php submit_button(); ?>
+        <input type="submit" name="reset"
+               value="<?php echo esc_attr__( "Reset Whitelisted Routes", "disable-json-api" ); ?>"
+               onclick="return confirm('<?php echo esc_attr__( "Are you sure you wish to clear all whitelisted rules?", "disable-json-api" ); ?>');">
+    </form>
+</div>
 
 <?php
 /**
- * The REST API lives at a different path when pretty permalinks are not in use
+ * Loop through all routes returned by the REST API and display them on-screen
  *
- * /wp-json lives at the root of the website so we use home_url()
- * /?rest_route=/ lives at the root of the wordpress install so we use site_url()
  */
-function DRA_get_rest_api_path() {
-	$restPath            = home_url() . "/wp-json/";
-	$permalink_structure = get_option( 'permalink_structure' );
-	if ( empty( $permalink_structure ) ) {
-		$restPath = site_url() . "/?rest_route=/";
+function DRA_display_route_checkboxes() {
+	$wp_rest_server     = rest_get_server();
+	$all_namespaces     = $wp_rest_server->get_namespaces();
+	$all_routes         = array_keys( $wp_rest_server->get_routes() );
+	$whitelisted_routes = is_array( get_option( 'DRA_route_whitelist' ) ) ? get_option( 'DRA_route_whitelist' ) : array();
+
+	$loopCounter       = 0;
+	$current_namespace = '';
+
+	foreach ( $all_routes as $route ) {
+		$is_route_namespace = in_array( ltrim( $route, "/" ), $all_namespaces );
+		$checkedProp        = DRA_get_route_checked_prop( $route, $whitelisted_routes );
+
+		if ( $is_route_namespace || "/" == $route ) {
+			$current_namespace = $route;
+			if ( 0 != $loopCounter ) {
+				echo "</ul>";
+			}
+			$route_for_display = ( "/" == $route ) ? "/ <em>" . esc_html__( "REST API ROOT", "disable-json-api" ) . "</em>" : esc_html( $route );
+			echo "<h2><label><input name='rest_routes[]' value='$route' type='checkbox' id='dra_namespace_$loopCounter' onclick='dra_namespace_click(\"$route\", $loopCounter)' $checkedProp>&nbsp;$route_for_display</label></h2><ul>";
+
+		} else {
+			echo "<li><label><input name='rest_routes[]' value='$route' type='checkbox' data-namespace='$current_namespace' $checkedProp>&nbsp;" . esc_html( $route ) . "</label></li>";
+		}
+
+		$loopCounter ++;
+	}
+	echo "</ul>";
+}
+
+
+/**
+ * During comparison, encode the route being requested in the same fashion that it's stored in the database option
+ * Encoding during save happens in Disable_REST_API::maybe_process_settings_form()
+ *
+ * @param $route
+ * @param $whitelisted_routes
+ *
+ * @return string
+ */
+function DRA_get_route_checked_prop( $route, $whitelisted_routes ) {
+	if ( in_array( esc_html( $route ), $whitelisted_routes ) ) {
+		return "checked";
 	}
 
-	return $restPath;
+	return "";
 }
