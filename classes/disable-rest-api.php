@@ -31,7 +31,7 @@ class Disable_REST_API {
 
 		add_action( 'admin_menu', array( &$this, 'define_admin_link' ) );
 
-		add_filter( 'rest_authentication_errors', array( &$this, 'whitelist_routes' ), 1 );
+		add_filter( 'rest_authentication_errors', array( &$this, 'whitelist_routes' ), 20 );
 
 	}
 
@@ -48,16 +48,24 @@ class Disable_REST_API {
 	/**
 	 * Checks for a current route being requested, and processes the whitelist
 	 *
-	 * @return void
+	 * @param $access
+	 *
+	 * @return WP_Error|null|boolean
 	 */
-	public function whitelist_routes() {
+	public function whitelist_routes( $access ) {
 
 		$current_route = $this->get_current_route();
+
 		if ( ! empty( $current_route ) && ! $this->is_whitelisted( $current_route ) ) {
-			add_filter( 'rest_authentication_errors', array( &$this, 'only_allow_logged_in_rest_access' ), 99 );
+			if ( ! is_user_logged_in() ) {
+				return new WP_Error( 'rest_cannot_access', esc_html__( 'DRA: Only authenticated users can access the REST API.', 'disable-json-api' ), array( 'status' => rest_authorization_required_code() ) );
+			}
 		}
 
+		return $access;
+
 	}
+
 
 	/**
 	 * Current REST route getter.
@@ -96,23 +104,6 @@ class Disable_REST_API {
 	private function get_route_whitelist_option() {
 
 		return (array) get_option( 'DRA_route_whitelist', array() );
-
-	}
-
-	/**
-	 * Returning an authentication error if a user who is not logged in tries to query the REST API
-	 *
-	 * @param $access
-	 *
-	 * @return WP_Error|null|boolean
-	 */
-	public function only_allow_logged_in_rest_access( $access ) {
-
-		if ( ! is_user_logged_in() ) {
-			return new WP_Error( 'rest_cannot_access', esc_html__( 'DRA: Only authenticated users can access the REST API.', 'disable-json-api' ), array( 'status' => rest_authorization_required_code() ) );
-		}
-
-		return $access;
 
 	}
 
