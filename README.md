@@ -1,5 +1,7 @@
 # [Disable REST API]
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/96fc2316f7644938b72a5ffd1e882576)](https://www.codacy.com/app/dmchale/disable-json-api?utm_source=github.com&utm_medium=referral&utm_content=dmchale/disable-json-api&utm_campaign=badger)
+
 ** This is the public respository for the latest DEVELOPMENT copy of the plugin. There is absolutely no guarantee, 
 express or implied, that the code you find here is a stable build. For official releases, please see the 
 WordPress repository at https://wordpress.org/plugins/disable-json-api/ **
