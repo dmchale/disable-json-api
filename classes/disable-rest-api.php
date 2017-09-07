@@ -180,13 +180,22 @@ class Disable_REST_API {
 		if ( empty( $rest_routes ) || isset( $_POST['reset'] ) ) {
 			delete_option( 'DRA_route_whitelist' );
 
+			add_settings_error( 'DRA-notices', esc_attr( 'settings_updated' ), esc_html__( 'All whitelists have been removed.' ), 'updated' );
+			add_action( 'admin_notices', array( &$this, 'show_admin_notices' ) );
+
 			return;
 		}
 
 		// Save whitelist to the Options table
 		update_option( 'DRA_route_whitelist', $rest_routes );
 
+		add_settings_error( 'DRA-notices', esc_attr( 'settings_updated' ), esc_html__( 'Whitelist settings saved.' ), 'updated' );
+		add_action( 'admin_notices', array( &$this, 'show_admin_notices' ) );
+
 	}
 
+	public function show_admin_notices() {
+		settings_errors( 'DRA-notices' );
+	}
 
 }
