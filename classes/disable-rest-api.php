@@ -17,6 +17,7 @@ class Disable_REST_API {
 	 */
 	private $base_file_path;
 
+
 	/**
 	 * Disable_REST_API constructor.
 	 *
@@ -44,6 +45,7 @@ class Disable_REST_API {
 			load_plugin_textdomain( 'disable-json-api', false, $this->base_file_path . '/languages/' );
 		}
 	}
+
 
 	/**
 	 * Checks for a current route being requested, and processes the whitelist
@@ -95,6 +97,7 @@ class Disable_REST_API {
 		}, false );
 
 	}
+
 
 	/**
 	 * Get `DRA_route_whitelist` option array from database
