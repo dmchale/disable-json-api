@@ -56,12 +56,14 @@ class Disable_REST_API {
 	 */
 	public function whitelist_routes( $access ) {
 
+		if ( is_wp_error( $access ) || is_user_logged_in() ) {
+			return $access;
+		}
+
 		$current_route = $this->get_current_route();
 
 		if ( ! empty( $current_route ) && ! $this->is_whitelisted( $current_route ) ) {
-			if ( ! is_user_logged_in() ) {
-				return new WP_Error( 'rest_cannot_access', esc_html__( 'DRA: Only authenticated users can access the REST API.', 'disable-json-api' ), array( 'status' => rest_authorization_required_code() ) );
-			}
+			return new WP_Error( 'rest_cannot_access', esc_html__( 'DRA: Only authenticated users can access the REST API.', 'disable-json-api' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		return $access;
