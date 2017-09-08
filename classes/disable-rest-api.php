@@ -32,7 +32,7 @@ class Disable_REST_API {
 
 		add_action( 'admin_menu', array( &$this, 'define_admin_link' ) );
 
-		add_filter( 'rest_authentication_errors', array( &$this, 'whitelist_routes' ), 20 );
+		add_filter( 'rest_authentication_errors', array( &$this, 'whitelist_routes' ), 5 );
 
 	}
 
