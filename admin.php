@@ -66,7 +66,7 @@ function DRA_display_route_checkboxes() {
 			echo "<h2><label><input name='rest_routes[]' value='$route' type='checkbox' id='dra_namespace_$loopCounter' onclick='dra_namespace_click(\"$route\", $loopCounter)' $checkedProp>&nbsp;$route_for_display</label></h2><ul>";
 
 			if ( "/" == $route ) {
-				echo "<li>" . esc_html__( "On this website, the REST API root is", "disable-json-api" ) . " <strong>" . rest_url() . "</strong></li>";
+				echo "<li>" . sprintf( esc_html__( "On this website, the REST API root is %s", "disable-json-api" ), "<strong>" . rest_url() . "</strong>" ) . "</li>";
 			}
 
 		} else {
