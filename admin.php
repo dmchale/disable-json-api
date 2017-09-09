@@ -54,7 +54,7 @@ function DRA_display_route_checkboxes() {
 
 	foreach ( $all_routes as $route ) {
 		$is_route_namespace = in_array( ltrim( $route, "/" ), $all_namespaces );
-		$checkedProp        = DRA_get_route_checked_prop( $route, $whitelisted_routes );
+		$checkedProp        = checked( in_array( esc_html( $route ), $whitelisted_routes, true ), true, false );
 
 		if ( $is_route_namespace || "/" == $route ) {
 			$current_namespace = $route;
@@ -76,22 +76,4 @@ function DRA_display_route_checkboxes() {
 		$loopCounter ++;
 	}
 	echo "</ul>";
-}
-
-
-/**
- * During comparison, encode the route being requested in the same fashion that it's stored in the database option
- * Encoding during save happens in Disable_REST_API::maybe_process_settings_form()
- *
- * @param $route
- * @param $whitelisted_routes
- *
- * @return string
- */
-function DRA_get_route_checked_prop( $route, $whitelisted_routes ) {
-	if ( in_array( esc_html( $route ), $whitelisted_routes ) ) {
-		return "checked='checked'";
-	}
-
-	return "";
 }
