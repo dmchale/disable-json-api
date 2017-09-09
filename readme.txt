@@ -1,5 +1,5 @@
 === Disable REST API ===
-Contributors: dmchale
+Contributors: dmchale, tangrufus
 Tags: admin, api, json, REST, rest-api, disable
 Requires at least: 4.4
 Requires PHP: 5.3
