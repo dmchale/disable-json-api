@@ -89,9 +89,7 @@ function DRA_display_route_checkboxes() {
  * @return string
  */
 function DRA_get_route_checked_prop( $route, $whitelisted_routes ) {
-	if ( in_array( esc_html( $route ), $whitelisted_routes ) ) {
-		return "checked='checked'";
-	}
+	$is_route_checked = in_array( esc_html( $route ), $whitelisted_routes, true );
 
-	return "";
+	return checked( $is_route_checked, true, false );
 }
