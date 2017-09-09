@@ -56,6 +56,11 @@ class Disable_REST_API {
 	 */
 	public function whitelist_routes( $access ) {
 
+		// Return current value of $access and skip all plugin functionality
+		if ( $this->allow_rest_api() ) {
+			return $access;
+		}
+
 		$current_route = $this->get_current_route();
 
 		if ( ! empty( $current_route ) && ! $this->is_whitelisted( $current_route ) ) {
@@ -193,4 +198,13 @@ class Disable_REST_API {
 
 	}
 
+
+	/**
+	 * Allow carte blanche access for logged-in users (or allow override via filter)
+	 *
+	 * @return bool
+	 */
+	private function allow_rest_api() {
+		return (bool) apply_filters( 'dra_allow_rest_api', is_user_logged_in() );
+	}
 }
