@@ -64,9 +64,7 @@ class Disable_REST_API {
 		$current_route = $this->get_current_route();
 
 		if ( ! empty( $current_route ) && ! $this->is_whitelisted( $current_route ) ) {
-			if ( ! is_user_logged_in() ) {
-				return new WP_Error( 'rest_cannot_access', esc_html__( 'DRA: Only authenticated users can access the REST API.', 'disable-json-api' ), array( 'status' => rest_authorization_required_code() ) );
-			}
+			return $this->get_wp_error( $access );
 		}
 
 		return $access;
@@ -207,4 +205,23 @@ class Disable_REST_API {
 	private function allow_rest_api() {
 		return (bool) apply_filters( 'dra_allow_rest_api', is_user_logged_in() );
 	}
+
+
+	/**
+	 * If $access is already a WP_Error object, add our error to the list
+	 * Otherwise return a new one
+	 *
+	 * @param $access
+	 *
+	 * @return WP_Error
+	 */
+	private function get_wp_error( $access ) {
+		$error_message = esc_html__( 'DRA: Only authenticated users can access the REST API.', 'disable-json-api' );
+		if ( is_wp_error( $access ) ) {
+			return $access->add( 'rest_cannot_access', $error_message, array( 'status' => rest_authorization_required_code() ) );
+		}
+
+		return new WP_Error( 'rest_cannot_access', $error_message, array( 'status' => rest_authorization_required_code() ) );
+	}
+
 }
