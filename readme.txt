@@ -40,8 +40,8 @@ area
 
 While logged into WordPress as any user, the REST API will function as intended. Because of this, you must use a new
 browser - or Chrome's incognito mode - to test your website with a clean session. Go to yourdomain.com/wp-json/ (or
-yourdomain.com/?rest_route=/ if you have pretty permalinks disabled) to test the results. You will see an
-authentication error returned if the plugin is active.
+yourdomain.com/?rest_route=/ if you have pretty permalinks disabled) while NOT LOGGED IN to test the results. You will
+see an authentication error returned if the plugin is active. "DRA: Only authenticated users can access the REST API."
 
 = Does this plugin disable all REST API's installed? =
 
@@ -52,14 +52,17 @@ disabled so long as this plugin is active. Namespaces and routes may be whitelis
 == Screenshots ==
 
 1. The JSON returned by a website with the API disabled via filters (WP versions 4.4, 4.5, 4.6)
+2. The JSON returned by a website with the API disabled via authentication methods (WP versions 4.7+)
 
 == Changelog ==
 
 = 1.4 =
 * Tested for WP v4.8
+* Tested for PHP 5.3+
 * Added settings screen
 * Site Admins may now whitelist routes that they wish to allow unauthenticated access to
-* Props to @tangrufus for some of the code which made its way into this release
+* Added `dra_allow_rest_api` filter to the is_logged_in() check, so developers can get more granular with permissions
+* Props to @tangrufus for all of the help that went into this release
 
 = 1.3 =
 * Tested for WP v4.7
@@ -78,7 +81,7 @@ disabled so long as this plugin is active. Namespaces and routes may be whitelis
 == Upgrade Notice ==
 
 = 1.4 =
-* Added support to optionally whitelist routes of the REST API via Settings page.
+* Adds support to optionally whitelist individual routes of the REST API via Settings page.
 
 = 1.1 =
 * Now with support for the 2.0 beta API filters
