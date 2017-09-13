@@ -127,7 +127,7 @@ class Disable_REST_API {
 	 */
 	public function settings_link( $links ) {
 
-		$settings_url  = menu_page_url( self::MENU_SLUG );
+		$settings_url  = menu_page_url( self::MENU_SLUG, false );
 		$settings_link = "<a href='$settings_url'>" . esc_html__( "Settings", "disable-json-api" ) . "</a>";
 		array_unshift( $links, $settings_link );
 
