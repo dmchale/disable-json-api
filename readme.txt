@@ -4,7 +4,7 @@ Tags: admin, api, json, REST, rest-api, disable
 Requires at least: 4.4
 Requires PHP: 5.3
 Tested up to: 4.8
-Stable tag: 1.4.1
+Stable tag: 1.4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -55,6 +55,12 @@ disabled so long as this plugin is active. Namespaces and routes may be whitelis
 2. The JSON returned by a website with the API disabled via authentication methods (WP versions 4.7+)
 
 == Changelog ==
+
+= 1.4.2 =
+* Fixed issue causing unintentional unlocking of endpoints when another WP_Error existed before this plugin did its job
+
+= 1.4.1 =
+* Fixed echo of text URL to primary Plugins page in WP Dashboard
 
 = 1.4 =
 * Tested for WP v4.8
