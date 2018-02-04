@@ -16,6 +16,12 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+// i10n
+add_action( 'init', 'disable_rest_api_load_textdomain' );
+function disable_rest_api_load_textdomain() {
+	load_plugin_textdomain( 'disable-json-api', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+}
+
 // Remove REST API info from head and headers
 remove_action( 'xmlrpc_rsd_apis', 'rest_output_rsd' );
 remove_action( 'wp_head', 'rest_output_link_wp_head', 10 );
