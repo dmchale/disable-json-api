@@ -57,7 +57,7 @@ disabled so long as this plugin is active. Namespaces and routes may be whitelis
 == Changelog ==
 
 = 1.4.3 =
-* Added `load_plugin_textdomain()` for i10n
+* Added `load_plugin_textdomain()` for i18n
 
 = 1.4.2 =
 * Fixed issue causing unintentional unlocking of endpoints when another WP_Error existed before this plugin did its job

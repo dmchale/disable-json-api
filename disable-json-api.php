@@ -16,7 +16,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-// i10n
+// i18n
 add_action( 'init', 'disable_rest_api_load_textdomain' );
 function disable_rest_api_load_textdomain() {
 	load_plugin_textdomain( 'disable-json-api', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
