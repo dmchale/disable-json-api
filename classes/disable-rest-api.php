@@ -51,7 +51,7 @@ class Disable_REST_API {
 
 		$current_route = $this->get_current_route();
 
-		if ( ! empty( $current_route ) && ! $this->is_whitelisted( $current_route ) ) {
+		if ( ! $this->is_whitelisted( $current_route ) ) {
 			return $this->get_wp_error( $access );
 		}
 
