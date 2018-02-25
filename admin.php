@@ -34,7 +34,7 @@
 		<?php submit_button(); ?>
         <input type="submit" name="reset"
                value="<?php echo esc_attr__( "Reset Whitelisted Routes", "disable-json-api" ); ?>"
-               onclick="return confirm('<?php echo esc_attr__( "Are you sure you wish to clear all whitelisted rules?", "disable-json-api" ); ?>');">
+               onclick="return confirm('<?php echo esc_attr__( "Are you sure you wish to clear all whitelisted routes?", "disable-json-api" ); ?>');">
     </form>
 </div>
 
