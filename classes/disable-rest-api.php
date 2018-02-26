@@ -173,14 +173,14 @@ class Disable_REST_API {
 		// If resetting or whitelist is empty, clear the option and exit the function
 		if ( empty( $rest_routes ) || isset( $_POST['reset'] ) ) {
 			delete_option( 'DRA_route_whitelist' );
-			add_settings_error( 'DRA-notices', esc_attr( 'settings_updated' ), esc_html__( 'All whitelists have been removed.' ), 'updated' );
+			add_settings_error( 'DRA-notices', esc_attr( 'settings_updated' ), esc_html__( 'All whitelists have been removed.', 'disable-json-api' ), 'updated' );
 
 			return;
 		}
 
 		// Save whitelist to the Options table
 		update_option( 'DRA_route_whitelist', $rest_routes );
-		add_settings_error( 'DRA-notices', esc_attr( 'settings_updated' ), esc_html__( 'Whitelist settings saved.' ), 'updated' );
+		add_settings_error( 'DRA-notices', esc_attr( 'settings_updated' ), esc_html__( 'Whitelist settings saved.', 'disable-json-api' ), 'updated' );
 
 	}
 
