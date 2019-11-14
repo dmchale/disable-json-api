@@ -2,22 +2,26 @@
 Contributors: dmchale, tangrufus
 Tags: admin, api, json, REST, rest-api, disable
 Requires at least: 4.4
-Requires PHP: 5.3
-Tested up to: 4.9
-Stable tag: 1.4.3
+Requires PHP: 5.6
+Tested up to: 5.3
+Stable tag: 1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Disable the use of the JSON REST API on your website to unauthenticated users.
+Disable the use of the REST API on your website to unauthenticated users.
 
 == Description ==
 
-** Version 1.4 now supports whitelisting of individual routes within the REST API **
+The most comprehensive plugin for controlling access to the WordPress REST API!
 
-The engine for the API has existed in WordPress since v4.4, but additional functionality and endpoints are a
-continual project. While this is very exciting news for many reasons - and many plugins, themes, and even pieces of
-WordPress core are already beginning to use the REST API - it is also not functionality that every site admin is going
-to want enabled on their website if not necessary.
+Works as a "set it and forget it" install. Just upload and activate, and the entire REST API will be inaccessible to
+your site visitors. Or if you have a plugin or theme installed which needs some of its endpoints to be accessible to
+site visitors, you can do that too. Go to the Settings page and you can quickly whitelist individual endpoints - or
+entire branches of endpoints - registered with the REST API.
+
+The engine for the API has existed in WordPress since v4.4 and additional functionality and endpoints are a
+continual project. While this is very exciting news for many reasons, it is also not functionality that every site
+admin wants enabled on their website if not necessary.
 
 As of WordPress 4.7, the filters provided for disabling the REST API were removed. To compensate, this plugin will
 forcibly return an authentication error to any API requests from sources who are not logged into your website, which
@@ -53,8 +57,15 @@ disabled so long as this plugin is active. Namespaces and routes may be whitelis
 
 1. The JSON returned by a website with the API disabled via filters (WP versions 4.4, 4.5, 4.6)
 2. The JSON returned by a website with the API disabled via authentication methods (WP versions 4.7+)
+3. The Settings page lets you selectively whitelist endpoints registered with the REST API.
 
 == Changelog ==
+
+= 1.5 =
+* Tested up to WP v5.3
+* Added enforcement for WordPress and PHP minimum version requirements
+* Fixed minor bug to prevent unintended empty routes
+* Minor text updates and adding textdomain to translation functions that didn't have them
 
 = 1.4.3 =
 * Added `load_plugin_textdomain()` for i18n

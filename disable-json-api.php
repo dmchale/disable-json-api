@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Disable REST API
  * Plugin URI: http://www.binarytemplar.com/disable-json-api
- * Description: Disable the use of the JSON REST API on your website to anonymous users
- * Version: 1.4.4-beta
+ * Description: Disable the use of the REST API on your website to anonymous users
+ * Version: 1.5
  * Author: Dave McHale
  * Author URI: http://www.binarytemplar.com
  * Text Domain: disable-json-api

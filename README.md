@@ -6,7 +6,7 @@
 express or implied, that the code you find here is a stable build. For official releases, please see the 
 WordPress repository at https://wordpress.org/plugins/disable-json-api/ **
   
-Disable the use of the JSON REST API on your website to unauthenticated users.
+Disable the use of the REST API on your website to unauthenticated users.
 ## Installation
 1. Install to WordPress plugins as normal and activate.
 ## Usage
@@ -18,7 +18,9 @@ Disable the use of the JSON REST API on your website to unauthenticated users.
 unauthenticated users. 
 3. In version 1.4 we introduced the Settings screen and allow site admins to whitelist routes 
 they wish to allow for unauthenticated users.
+4. In version 1.5 we added minimum requirements checks for WordPress and PHP. Fixed minor bug to prevent unintended 
+empty routes. Minor text & text-domain updates. 
 ## Credits
-Authored by Dave McHale
+Authored by Dave McHale. Contributed to by Tang Rufus.
 ## License
 As with all WordPress projects, this plugin is released under the GPL 
