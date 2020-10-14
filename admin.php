@@ -26,28 +26,49 @@
         <strong><?php echo esc_html__( "IMPORTANT NOTE:", "disable-json-api" ); ?></strong> <?php echo esc_html__( "Checking a box merely restores default functionality to an endpoint. Other authentication and/or permissions may still be required for access, or other themes/plugins may also affect access to those endpoints.", "disable-json-api" ); ?>
     </p>
 
+    Rules for: <select name="role">
+        <option value="none">Unauthenticated Users</option>
+        <?php
+        $role = ( isset( $_GET['role'] ) ) ? $_GET['role'] : 'none';
+        wp_dropdown_roles( $role );
+        ?>
+    </select>
+
     <form method="post" action="" id="DRA_form">
 		<?php wp_nonce_field( 'DRA_admin_nonce' ); ?>
+        <input type="hidden" name="role" value="<?php echo $role; ?>">
 
-        <div id="DRA_container"><?php DRA_display_route_checkboxes(); ?></div>
+        <div id="DRA_container"><?php DRA_display_route_checkboxes( $role ); ?></div>
 
 		<?php submit_button(); ?>
         <input type="submit" name="reset"
                value="<?php echo esc_attr__( "Reset Whitelisted Routes", "disable-json-api" ); ?>"
-               onclick="return confirm('<?php echo esc_attr__( "Are you sure you wish to clear all whitelisted routes?", "disable-json-api" ); ?>');">
+               onclick="return confirm('<?php echo esc_attr__( "Are you sure you wish to clear all whitelisted routes for this User Role?", "disable-json-api" ); ?>');">
     </form>
 </div>
+
+<script>
+jQuery( function() {
+
+    jQuery('select[name=role]').change( function() {
+        let newVal = jQuery(this).val();
+        let newUrl = window.location.origin + window.location.pathname + '?page=disable_rest_api_settings&role=' + newVal ;
+        window.location.href = newUrl;
+    });
+
+});
+</script>
 
 <?php
 /**
  * Loop through all routes returned by the REST API and display them on-screen
  *
  */
-function DRA_display_route_checkboxes() {
+function DRA_display_route_checkboxes( $role = 'none' ) {
 	$wp_rest_server     = rest_get_server();
 	$all_namespaces     = $wp_rest_server->get_namespaces();
 	$all_routes         = array_keys( $wp_rest_server->get_routes() );
-	$whitelisted_routes = is_array( get_option( 'DRA_route_whitelist' ) ) ? get_option( 'DRA_route_whitelist' ) : array();
+	$whitelisted_routes = DRA_get_whitelisted_routes( $role );
 
 	$loopCounter       = 0;
 	$current_namespace = '';
@@ -92,4 +113,35 @@ function DRA_get_route_checked_prop( $route, $whitelisted_routes ) {
 	$is_route_checked = in_array( esc_html( $route ), $whitelisted_routes, true );
 
 	return checked( $is_route_checked, true, false );
+}
+
+
+/**
+ * Check the WP Option for our stored values of which routes should be allowed based on the supplied role
+ *
+ * @param $role
+ *
+ * @return array|false|mixed|void
+ */
+function DRA_get_whitelisted_routes( $role ) {
+	$arr_option = is_array( get_option( 'DRA_route_whitelist' ) ) ? get_option( 'DRA_route_whitelist' ) : array();
+
+	// If we have an empty array, just return that
+	if ( empty( $arr_option ) ) {
+	    return $arr_option;
+    }
+
+	// This helps us bridge the gap from plugin version <=1.5.1 to >=1.6.
+    // We didn't use to store results based on role, but we want to return the values for "unauthenticated users" if we have recently upgraded
+	if ( 'none' == $role && ! isset( $arr_option['none'] ) ) {
+	    return $arr_option;
+    }
+
+	// If we have a definition for the currently requested role, return it
+	if ( isset( $arr_option[ $role ] ) ) {
+	    return $arr_option[ $role ];
+    }
+
+    // If we failed all the way down to here, return an empty array since we're asking for a role we don't have a definition for yet
+    return array();
 }
