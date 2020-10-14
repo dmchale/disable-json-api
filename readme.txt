@@ -46,6 +46,9 @@ This plugin is ONLY meant to disable endpoints accessible via the default REST A
 
 == Changelog ==
 
+= 1.5.1 =
+* Tested up to WP v5.5
+
 = 1.5 =
 * Tested up to WP v5.3
 * Added enforcement for WordPress and PHP minimum version requirements
