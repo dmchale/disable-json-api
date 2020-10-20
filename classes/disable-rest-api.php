@@ -9,6 +9,7 @@ class Disable_REST_API {
 
 	const MENU_SLUG = 'disable_rest_api_settings';
 	const CAPABILITY = 'manage_options';
+	const VERSION = '1.5.1';
 
 	/**
 	 * Stores 'disable-json-api/disable-json-api.php' typically
@@ -24,6 +25,8 @@ class Disable_REST_API {
 	 * @param $path
 	 */
 	public function __construct( $path ) {
+
+		$this->v1_6_option_check();     // Do logic for upgrading to 1.6 from versions less than 1.6
 
 		// Set variable so the class knows how to reference the plugin
 		$this->base_file_path = plugin_basename( $path );
@@ -83,7 +86,7 @@ class Disable_REST_API {
 	 */
 	private function is_whitelisted( $currentRoute ) {
 
-		return array_reduce( $this->get_route_whitelist_option(), function ( $isMatched, $pattern ) use ( $currentRoute ) {
+		return array_reduce( $this->get_route_whitelist_options(), function ( $isMatched, $pattern ) use ( $currentRoute ) {
 			return $isMatched || (bool) preg_match( '@^' . htmlspecialchars_decode( $pattern ) . '$@i', $currentRoute );
 		}, false );
 
@@ -91,14 +94,23 @@ class Disable_REST_API {
 
 
 	/**
-	 * Get `DRA_route_whitelist` option array from database
+	 * Get option array from database
 	 *
 	 * @return array
 	 */
-	private function get_route_whitelist_option() {
+	private function get_route_whitelist_options() {
 
-		return (array) get_option( 'DRA_route_whitelist', array() );
+		$current_options = get_option( 'disable_rest_api_options', array() );
+		$allowed_routes = array();
 
+		$current_user_roles = $this->get_current_user_roles();
+		foreach ( $current_user_roles as $role ) {
+			if ( isset( $current_options['rules'][$role] ) ) {
+				$allowed_routes = array_merge( $allowed_routes, $current_options['rules'][$role] );
+			};
+		}
+
+		return $allowed_routes;
 	}
 
 
@@ -191,7 +203,7 @@ class Disable_REST_API {
 	 * @return bool
 	 */
 	private function allow_rest_api() {
-		return (bool) apply_filters( 'dra_allow_rest_api', is_user_logged_in() );
+		return (bool) apply_filters( 'dra_allow_rest_api', false );
 	}
 
 
@@ -213,6 +225,58 @@ class Disable_REST_API {
 		}
 
 		return new WP_Error( 'rest_cannot_access', $error_message, array( 'status' => rest_authorization_required_code() ) );
+	}
+
+
+	/**
+	 * Helper function to migrate from pre-version-1.6 to the new option
+	 */
+	private function v1_6_option_check() {
+
+		// If our new option already exists, we can bail
+		if ( get_option( 'disable_rest_api_options') ) {
+			return;
+		}
+
+		// Define the basic structure of our new option
+		$arr_option = array(
+			'version' => self::VERSION,
+			'roles' => array(),
+		);
+
+		// Default list of whitelisted routes. By default, nothing is allowed
+		$current_rules = ( get_option( 'DRA_route_whitelist' ) ) ? get_option( 'DRA_route_whitelist' ) : array();
+
+		// Define the "unauthenticated" rules based on the old option value
+		$arr_option['roles']['none'] = array(
+			'default_allow'     => false,
+			'rules'             => $current_rules,
+		);
+
+		// Save new option
+		update_option( 'disable_rest_api_options', $arr_option );
+
+		// delete the old option
+		delete_option( 'DRA_route_whitelist' );
+
+	}
+
+
+	/**
+	 * Return array with list of roles the current user belongs to
+	 *
+	 * @return array
+	 */
+	private function get_current_user_roles() {
+		if ( ! is_user_logged_in() ) {
+			return array(
+				'name' => 'none',
+			);
+		}
+
+		$user = wp_get_current_user();
+		return ( array ) $user->roles;
+
 	}
 
 }
