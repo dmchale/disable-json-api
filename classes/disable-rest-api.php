@@ -26,26 +26,29 @@ class Disable_REST_API {
 	 */
 	public function __construct( $path ) {
 
-		$this->v1_6_option_check();     // Do logic for upgrading to 1.6 from versions less than 1.6
+		// Do logic for upgrading to 1.6 from versions less than 1.6
+		$this->v1_6_option_check();
 
 		// Set variable so the class knows how to reference the plugin
 		$this->base_file_path = plugin_basename( $path );
 
+		// Set up admin page for plugin settings
 		add_action( 'admin_menu', array( &$this, 'define_admin_link' ) );
 
-		add_filter( 'rest_authentication_errors', array( &$this, 'whitelist_routes' ), 20 );
+		// This actually does everything in this plugin
+		add_filter( 'rest_authentication_errors', array( &$this, 'you_shall_not_pass' ), 20 );
 
 	}
 
 
 	/**
-	 * Checks for a current route being requested, and processes the whitelist
+	 * Checks for a current route being requested, and processes the allowlist
 	 *
 	 * @param $access
 	 *
 	 * @return WP_Error|null|boolean
 	 */
-	public function whitelist_routes( $access ) {
+	public function you_shall_not_pass( $access ) {
 
 		// Return current value of $access and skip all plugin functionality
 		if ( $this->allow_rest_api() ) {
@@ -54,10 +57,11 @@ class Disable_REST_API {
 
 		$current_route = $this->get_current_route();
 
-		if ( ! $this->is_whitelisted( $current_route ) ) {
+		if ( ! $this->is_route_allowed( $current_route ) ) {
 			return $this->get_wp_error( $access );
 		}
 
+		// If we got all the way here, return the unmodified $access response
 		return $access;
 
 	}
@@ -78,15 +82,15 @@ class Disable_REST_API {
 
 
 	/**
-	 * Checks a route for whether it belongs to the whitelist
+	 * Checks a route for whether it belongs to the list of allowed routes
 	 *
 	 * @param $currentRoute
 	 *
 	 * @return boolean
 	 */
-	private function is_whitelisted( $currentRoute ) {
+	private function is_route_allowed( $currentRoute ) {
 
-		return array_reduce( $this->get_route_whitelist_options(), function ( $isMatched, $pattern ) use ( $currentRoute ) {
+		return array_reduce( $this->get_allowed_routes_for_current_user( $currentRoute ), function ( $isMatched, $pattern ) use ( $currentRoute ) {
 			return $isMatched || (bool) preg_match( '@^' . htmlspecialchars_decode( $pattern ) . '$@i', $currentRoute );
 		}, false );
 
@@ -96,18 +100,30 @@ class Disable_REST_API {
 	/**
 	 * Get option array from database
 	 *
+	 * @param $currentRoute
+	 *
 	 * @return array
 	 */
-	private function get_route_whitelist_options() {
+	private function get_allowed_routes_for_current_user( $currentRoute ) {
 
 		$current_options = get_option( 'disable_rest_api_options', array() );
 		$allowed_routes = array();
 
 		$current_user_roles = $this->get_current_user_roles();
 		foreach ( $current_user_roles as $role ) {
-			if ( isset( $current_options['rules'][$role] ) ) {
-				$allowed_routes = array_merge( $allowed_routes, $current_options['rules'][$role] );
-			};
+
+			if ( isset( $current_options[$role] ) ) {
+
+				$allowed_routes = array_merge( $allowed_routes, $current_options[$role]['allow_list'] );
+
+			} elseif ( true === $current_options['default_allow'] ) {
+
+				// If the user role is not defined in the settings, but the settings say that we should ALLOW routes for unknown user roles by default,
+				// then return the requested route so that it can get through
+				$allowed_routes[] = $currentRoute;
+
+			}
+
 		}
 
 		return $allowed_routes;
@@ -177,22 +193,22 @@ class Disable_REST_API {
 			return;
 		}
 
-		// Catch the routes that should be whitelisted
+		// Catch the routes that should be allowed
 		$rest_routes = ( isset( $_POST['rest_routes'] ) ) ?
 			array_map( 'esc_html', wp_unslash( $_POST['rest_routes'] ) ) :
 			null;
 
-		// If resetting or whitelist is empty, clear the option and exit the function
+		// If resetting or allowlist is empty, clear the option and exit the function
 		if ( empty( $rest_routes ) || isset( $_POST['reset'] ) ) {
 			delete_option( 'DRA_route_whitelist' );
-			add_settings_error( 'DRA-notices', esc_attr( 'settings_updated' ), esc_html__( 'All whitelists have been removed.', 'disable-json-api' ), 'updated' );
+			add_settings_error( 'DRA-notices', esc_attr( 'settings_updated' ), esc_html__( 'All allowlists have been removed.', 'disable-json-api' ), 'updated' );
 
 			return;
 		}
 
-		// Save whitelist to the Options table
+		// Save allowlist to the Options table
 		update_option( 'DRA_route_whitelist', $rest_routes );
-		add_settings_error( 'DRA-notices', esc_attr( 'settings_updated' ), esc_html__( 'Whitelist settings saved.', 'disable-json-api' ), 'updated' );
+		add_settings_error( 'DRA-notices', esc_attr( 'settings_updated' ), esc_html__( 'Allowlist settings saved.', 'disable-json-api' ), 'updated' );
 
 	}
 
@@ -238,26 +254,43 @@ class Disable_REST_API {
 			return;
 		}
 
+		// Migrate from the old Options variable to the new one
+		$this->create_settings_option( true );
+
+	}
+
+
+	/**
+	 * Create settings option for the plugin
+	 * Optionally migrate data from older versions of the plugin and clean up the old Option if applicable
+	 *
+	 * @param false $is_upgrade
+	 */
+	private function create_settings_option( $is_upgrade = false ) {
+
 		// Define the basic structure of our new option
 		$arr_option = array(
-			'version' => self::VERSION,
-			'roles' => array(),
+			'version'           => self::VERSION,       // the current version of this plugin
+			'default_allow'     => true,                // if a role is not specifically defined in the settings, should the default be to ALLOW the route or not?
+			'roles'             => array(),             // array of the user roles in this install of wordpress
 		);
 
-		// Default list of whitelisted routes. By default, nothing is allowed
-		$current_rules = ( get_option( 'DRA_route_whitelist' ) ) ? get_option( 'DRA_route_whitelist' ) : array();
+		// Default list of allowed routes. By default, nothing is allowed
+		$current_rules = ( $is_upgrade ) ? get_option( 'DRA_route_whitelist', array() ) : array();
 
-		// Define the "unauthenticated" rules based on the old option value
+		// Define the "unauthenticated" rules based on the old option value (or default value of "nothing")
 		$arr_option['roles']['none'] = array(
 			'default_allow'     => false,
-			'rules'             => $current_rules,
+			'allow_list'        => $current_rules,
 		);
 
 		// Save new option
 		update_option( 'disable_rest_api_options', $arr_option );
 
-		// delete the old option
-		delete_option( 'DRA_route_whitelist' );
+		// delete the old option if applicable
+		if ( $is_upgrade ) {
+			delete_option( 'DRA_route_whitelist' );
+		}
 
 	}
 
