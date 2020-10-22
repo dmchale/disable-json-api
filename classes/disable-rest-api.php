@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Disable_REST_API class
  *
@@ -26,11 +25,11 @@ class Disable_REST_API {
 	 */
 	public function __construct( $path ) {
 
-		// Do logic for upgrading to 1.6 from versions less than 1.6
-		$this->v1_6_option_check();
-
 		// Set variable so the class knows how to reference the plugin
 		$this->base_file_path = plugin_basename( $path );
+
+		// Do logic for upgrading to 1.6 from versions less than 1.6
+		add_action( 'init', array( &$this, 'v1_6_option_check' ) );
 
 		// Set up admin page for plugin settings
 		add_action( 'admin_menu', array( &$this, 'define_admin_link' ) );
@@ -90,43 +89,39 @@ class Disable_REST_API {
 	 */
 	private function is_route_allowed( $currentRoute ) {
 
-		return array_reduce( $this->get_allowed_routes_for_current_user( $currentRoute ), function ( $isMatched, $pattern ) use ( $currentRoute ) {
-			return $isMatched || (bool) preg_match( '@^' . htmlspecialchars_decode( $pattern ) . '$@i', $currentRoute );
-		}, false );
-
-	}
-
-
-	/**
-	 * Get option array from database
-	 *
-	 * @param $currentRoute
-	 *
-	 * @return array
-	 */
-	private function get_allowed_routes_for_current_user( $currentRoute ) {
-
 		$current_options = get_option( 'disable_rest_api_options', array() );
-		$allowed_routes = array();
-
 		$current_user_roles = $this->get_current_user_roles();
+
+		// Loop through user roles belonging to the current user
 		foreach ( $current_user_roles as $role ) {
 
-			if ( isset( $current_options[$role] ) ) {
+			// If we have a definition for the current user's role
+			if ( isset( $current_options['roles'][$role] ) ) {
 
-				$allowed_routes = array_merge( $allowed_routes, $current_options[$role]['allow_list'] );
+				// If the route has a definition and is set to True, allow it. Else allow it if there is NOT a definition and the role is set to allow unknown routes
+				if ( isset( $current_options['roles'][$role]['allow_list'][$currentRoute] ) && true === $current_options['roles'][$role]['allow_list'][$currentRoute] ) {
+					return true;
+				} elseif ( ! isset( $current_options['roles'][$role]['allow_list'][$currentRoute] ) && true === $current_options['roles'][$role]['default_allow'] ) {
+					return true;
+				}
 
 			} elseif ( true === $current_options['default_allow'] ) {
 
-				// If the user role is not defined in the settings, but the settings say that we should ALLOW routes for unknown user roles by default,
-				// then return the requested route so that it can get through
-				$allowed_routes[] = $currentRoute;
+				// If the user role is not defined in the settings, but the settings say that we should ALLOW routes for unknown user roles by default
+				return true;
 
 			}
 
 		}
 
-		return $allowed_routes;
+		// If we got all the way here, we didn't find any rules that said you should be allowed to view this route
+		return false;
+
+		// TODO: Delete this before releasing new version. We may still want to steal some of this logic though
+//		return array_reduce( $this->get_allowed_routes_for_current_user( $currentRoute ), function ( $isMatched, $pattern ) use ( $currentRoute ) {
+//			return $isMatched || (bool) preg_match( '@^' . htmlspecialchars_decode( $pattern ) . '$@i', $currentRoute );
+//		}, false );
+
 	}
 
 
@@ -247,7 +242,7 @@ class Disable_REST_API {
 	/**
 	 * Helper function to migrate from pre-version-1.6 to the new option
 	 */
-	private function v1_6_option_check() {
+	public function v1_6_option_check() {
 
 		// If our new option already exists, we can bail
 		if ( get_option( 'disable_rest_api_options') ) {
@@ -276,12 +271,15 @@ class Disable_REST_API {
 		);
 
 		// Default list of allowed routes. By default, nothing is allowed
-		$current_rules = ( $is_upgrade ) ? get_option( 'DRA_route_whitelist', array() ) : array();
+		$allowed_routes = ( $is_upgrade ) ? get_option( 'DRA_route_whitelist', array() ) : array();
+
+		// Build the rules for this role based on the merge with the previously allowed rules (if any)
+		$new_rules = DRA_Helpers::build_routes_rule( $allowed_routes );
 
 		// Define the "unauthenticated" rules based on the old option value (or default value of "nothing")
 		$arr_option['roles']['none'] = array(
 			'default_allow'     => false,
-			'allow_list'        => $current_rules,
+			'allow_list'        => $new_rules,
 		);
 
 		// Save new option
@@ -289,7 +287,7 @@ class Disable_REST_API {
 
 		// delete the old option if applicable
 		if ( $is_upgrade ) {
-			delete_option( 'DRA_route_whitelist' );
+			//delete_option( 'DRA_route_whitelist' );       // TODO: Make sure this line is uncommented
 		}
 
 	}

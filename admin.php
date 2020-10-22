@@ -1,68 +1,14 @@
 <style>
     h2 { display: inline; }
-
-    #DRA_container ul li {
-        padding-left: 20px;
-    }
-
-    #DRA_container em {
-        font-size: 0.8em;
-    }
-
-    .switch {
-        position: relative;
-        display: inline-block;
-        width: 38px;
-        height: 20px;
-        margin-right: 0.4em;
-    }
-
-    .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-    }
-
-    .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #ccc;
-        -webkit-transition: .4s;
-        transition: .4s;
-        border-radius: 18px;
-        display:inline;
-    }
-
-    .slider:before {
-        position: absolute;
-        content: "";
-        height: 14px;
-        width: 14px;
-        left: 4px;
-        bottom: 3px;
-        background-color: #fff;
-        -webkit-transition: .4s;
-        transition: .4s;
-        border-radius: 50%;
-    }
-
-    input:checked + .slider {
-        background-color: #2196F3;
-    }
-
-    input:focus + .slider {
-        box-shadow: 0 0 1px #2196F3;
-    }
-
-    input:checked + .slider:before {
-        -webkit-transform: translateX(16px);
-        -ms-transform: translateX(16px);
-        transform: translateX(16px);
-    }
+    #DRA_container ul li { padding-left: 20px; }
+    #DRA_container em { font-size: 0.8em; }
+    .switch { position: relative; display: inline-block; width: 38px; height: 20px; margin-right: 0.4em; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; -webkit-transition: .4s; transition: .4s; border-radius: 18px; display:inline; }
+    .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 4px; bottom: 3px; background-color: #fff; -webkit-transition: .4s; transition: .4s; border-radius: 50%; }
+    input:checked + .slider { background-color: #2196F3; }
+    input:focus + .slider { box-shadow: 0 0 1px #2196F3; }
+    input:checked + .slider:before { -webkit-transform: translateX(16px); -ms-transform: translateX(16px); transform: translateX(16px); }
 </style>
 <script>
     function dra_namespace_click(namespace, id) {
@@ -85,8 +31,8 @@
     <hr />
 
     <p>
-    Rules for: <select name="role">
-        <option value="none">Unauthenticated Users</option>
+    <?php echo esc_html__( "Rules for", "disable-json-api" ); ?>: <select name="role">
+        <option value="none"><?php echo esc_html__( "Unauthenticated Users", "disable-json-api" ); ?></option>
         <?php
         $role = ( isset( $_GET['role'] ) ) ? $_GET['role'] : 'none';
         wp_dropdown_roles( $role );
@@ -127,10 +73,9 @@ jQuery( function() {
  *
  */
 function DRA_display_route_checkboxes( $role = 'none' ) {
-	$wp_rest_server     = rest_get_server();
-	$all_namespaces     = $wp_rest_server->get_namespaces();
-	$all_routes         = array_keys( $wp_rest_server->get_routes() );
-	$allowed_routes = DRA_get_allowed_routes( $role );
+	$all_namespaces     = DRA_Helpers::get_all_rest_namespaces();
+	$all_routes         = DRA_Helpers::get_all_rest_routes();
+	$allowed_routes     = DRA_get_allowed_routes( $role );
 
 	$loopCounter       = 0;
 	$current_namespace = '';
@@ -207,3 +152,5 @@ function DRA_get_allowed_routes( $role ) {
     // If we failed all the way down to here, return an empty array since we're asking for a role we don't have a definition for yet
     return array();
 }
+
+use DisableRestAPI\Helpers;

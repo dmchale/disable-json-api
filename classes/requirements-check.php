@@ -6,7 +6,7 @@
  *
  */
 
-class Disable_REST_API_Requirements_Check {
+class DRA_Requirements_Check {
 	private $title = '';
 	private $php = '5.2.4';
 	private $wp = '3.8';

@@ -25,7 +25,7 @@ function disable_rest_api_load_textdomain() {
 // Requirements check, to cleanly handle failure of WP/PHP version requirements
 include( dirname( __FILE__ ) . '/classes/requirements-check.php' );
 
-$dra_requirements_check = new Disable_REST_API_Requirements_Check( array(
+$dra_requirements_check = new DRA_Requirements_Check( array(
 	'title' => 'Disable REST API',
 	'php'   => '5.3',
 	'wp'    => '4.4',
@@ -39,6 +39,9 @@ if ( $dra_requirements_check->passes() ) {
 	remove_action( 'xmlrpc_rsd_apis', 'rest_output_rsd' );
 	remove_action( 'wp_head', 'rest_output_link_wp_head', 10 );
 	remove_action( 'template_redirect', 'rest_output_link_header', 11 );
+
+	// Load in extra classes
+	require_once( plugin_dir_path( __FILE__ ) . 'classes/helpers.php' );
 
 	// WordPress 4.7+ disables the REST API via authentication short-circuit.
 	// For versions of WordPress < 4.7, disable the REST API via filters
