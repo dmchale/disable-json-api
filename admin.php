@@ -1,3 +1,6 @@
+<?php
+use DisableRestAPI\Helpers;
+?>
 <style>
     h2 { display: inline; }
     #DRA_container ul li { padding-left: 20px; }
@@ -23,6 +26,9 @@
 <div class="wrap">
     <h1><?php echo esc_html__( "Disable REST API", "disable-json-api" ); ?></h1>
 	<?php settings_errors( 'DRA-notices' ); ?>
+
+    <?php //print_r( get_option('DRA_route_whitelist')); ?>
+
     <p><?php echo esc_html__( "By default, this plugin ensures that the entire REST API is protected from non-authenticated users. You may use this page to specify which endpoints should be allowed to behave as normal.", "disable-json-api" ); ?></p>
     <p>
         <strong><?php echo esc_html__( "IMPORTANT NOTE:", "disable-json-api" ); ?></strong> <?php echo esc_html__( "Checking a box merely restores default functionality to an endpoint. Other authentication and/or permissions may still be required for access, or other themes/plugins may also affect access to those endpoints.", "disable-json-api" ); ?>
@@ -77,6 +83,8 @@ function DRA_display_route_checkboxes( $role = 'none' ) {
 	$all_routes         = DRA_Helpers::get_all_rest_routes();
 	$allowed_routes     = DRA_get_allowed_routes( $role );
 
+//	var_dump($allowed_routes);
+
 	$loopCounter       = 0;
 	$current_namespace = '';
 
@@ -117,7 +125,7 @@ function DRA_display_route_checkboxes( $role = 'none' ) {
  * @return string
  */
 function DRA_get_route_checked_prop( $route, $allowed_routes ) {
-	$is_route_checked = in_array( esc_html( $route ), $allowed_routes, true );
+	$is_route_checked = in_array( esc_html( $route ), array_map( 'esc_html', $allowed_routes ), true );
 
 	return checked( $is_route_checked, true, false );
 }
@@ -131,26 +139,42 @@ function DRA_get_route_checked_prop( $route, $allowed_routes ) {
  * @return array
  */
 function DRA_get_allowed_routes( $role ) {
-	$arr_option = is_array( get_option( 'DRA_route_whitelist' ) ) ? get_option( 'DRA_route_whitelist' ) : array();
+	$arr_option = get_option( 'disable_rest_api_options', array() );
 
 	// If we have an empty array, just return that
 	if ( empty( $arr_option ) ) {
 	    return $arr_option;
     }
 
-	// This helps us bridge the gap from plugin version <=1.5.1 to >=1.6.
-    // We didn't use to store results based on role, but we want to return the values for "unauthenticated users" if we have recently upgraded
+	$option_rules = array();
+	$allowed_rules = array();
+
 	if ( 'none' == $role && ! isset( $arr_option['roles']['none'] ) ) {
-	    return $arr_option; // TODO: fix logic here, this isn't what we should be doing with the new option values
+
+		// This helps us bridge the gap from plugin version <=1.5.1 to >=1.6.
+		// We didn't use to store results based on role, but we want to return the values for "unauthenticated users" if we have recently upgraded
+		$option_rules = ( array ) DRA_Helpers::build_routes_rule( $arr_option );
+
+    } elseif ( isset( $arr_option['roles'][$role]['allow_list'] ) ) {
+
+		// If we have a definition for the currently requested role, return it
+		$option_rules = ( array ) $arr_option['roles'][$role]['allow_list'];
+
+    } else {
+
+		// If we failed all the way down to here, return a default array since we're asking for a role we don't have a definition for yet
+		$option_rules = ( array ) DRA_Helpers::build_routes_rule_for_all( true );
+
     }
 
-	// If we have a definition for the currently requested role, return it
-	if ( isset( $arr_option['roles'][ $role ] ) ) {
-	    return ( array ) $arr_option['roles'][ $role ];
+	// Loop through and only save the keys that have a value pairing of true
+	foreach ( $option_rules as $key => $value ) {
+	    if ( true === $value ) {
+		    $allowed_rules[] = $key;
+        }
     }
 
-    // If we failed all the way down to here, return an empty array since we're asking for a role we don't have a definition for yet
-    return array();
+	// Return our array of allowed rules
+    return $allowed_rules;
+
 }
-
-use DisableRestAPI\Helpers;

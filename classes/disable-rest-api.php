@@ -188,22 +188,43 @@ class Disable_REST_API {
 			return;
 		}
 
+		// Confirm a valid role has been passed
+		$role = ( isset( $_POST['role'] ) ) ? $_POST['role'] : 'dra-undefined';
+		if ( ! DRA_Helpers::is_valid_role( $role ) ) {
+			add_settings_error( 'DRA-notices', esc_attr( 'settings_updated' ), esc_html__( 'Invalid user role detected when processing form. No updates have been made.', 'disable-json-api' ), 'error' );
+			return;
+		}
+
 		// Catch the routes that should be allowed
-		$rest_routes = ( isset( $_POST['rest_routes'] ) ) ?
-			array_map( 'esc_html', wp_unslash( $_POST['rest_routes'] ) ) :
-			null;
+		$rest_routes = ( isset( $_POST['rest_routes'] ) ) ? wp_unslash( $_POST['rest_routes'] ) : array();
+
+//		var_dump($rest_routes);
+
+		// Get back the full list of true/false routes based on the posted routes allowed
+		$rest_routes_for_setting = DRA_Helpers::build_routes_rule( $rest_routes );
+
+//		var_dump($rest_routes_for_setting);
+//		wp_die();
+
+		// Retrieve all current rules for all roles
+		$arr_option = get_option( 'disable_rest_api_options' );
+
+		// Save only the rules for this role back to itself
+		$default_allow = ( isset( $arr_option['roles'][$role]['default_allow'] ) ) ? $arr_option['roles'][$role]['default_allow'] : true;  // If this role doesn't exist yet, set `default_allow` to true. Yes, this is opinionated
+		$arr_option['roles'][$role] = array(
+			'default_allow'     => $default_allow,
+			'allow_list'        => $rest_routes_for_setting,
+		);
 
 		// If resetting or allowlist is empty, clear the option and exit the function
 		if ( empty( $rest_routes ) || isset( $_POST['reset'] ) ) {
-			delete_option( 'DRA_route_whitelist' );
-			add_settings_error( 'DRA-notices', esc_attr( 'settings_updated' ), esc_html__( 'All allowlists have been removed.', 'disable-json-api' ), 'updated' );
-
+			add_settings_error( 'DRA-notices', esc_attr( 'settings_updated' ), esc_html__( 'All allowlists have been removed for this user role.', 'disable-json-api' ), 'updated' );
 			return;
 		}
 
 		// Save allowlist to the Options table
-		update_option( 'DRA_route_whitelist', $rest_routes );
-		add_settings_error( 'DRA-notices', esc_attr( 'settings_updated' ), esc_html__( 'Allowlist settings saved.', 'disable-json-api' ), 'updated' );
+		update_option( 'disable_rest_api_options', $arr_option );
+		add_settings_error( 'DRA-notices', esc_attr( 'settings_updated' ), esc_html__( 'Allowlist settings saved for this user role.', 'disable-json-api' ), 'updated' );
 
 	}
 
