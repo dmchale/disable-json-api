@@ -40,14 +40,22 @@ if ( $dra_requirements_check->passes() ) {
 	remove_action( 'wp_head', 'rest_output_link_wp_head', 10 );
 	remove_action( 'template_redirect', 'rest_output_link_header', 11 );
 
-	// Load in extra classes
-	require_once( plugin_dir_path( __FILE__ ) . 'classes/helpers.php' );
-
 	// WordPress 4.7+ disables the REST API via authentication short-circuit.
 	// For versions of WordPress < 4.7, disable the REST API via filters
 	if ( version_compare( get_bloginfo( 'version' ), '4.7', '>=' ) ) {
+
+		// Load in extra classes
+		require_once( plugin_dir_path( __FILE__ ) . 'classes/helpers.php' );
+
+		// Only load admin classes if in admin area
+		if ( is_admin() ) {
+			require_once( plugin_dir_path( __FILE__ ) . 'classes/admin.php' );
+		}
+
+		// Load the primary Disable_REST_API class
 		require_once( plugin_dir_path( __FILE__ ) . 'classes/disable-rest-api.php' );
 		new Disable_REST_API( __FILE__ );
+
 	} else {
 		require_once( plugin_dir_path( __FILE__ ) . 'functions/legacy.php' );
 		DRA_Disable_Via_Filters();

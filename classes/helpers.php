@@ -103,4 +103,52 @@ class DRA_Helpers {
 	}
 
 
+	/**
+	 * Check the WP Option for our stored values of which routes should be allowed based on the supplied role
+	 *
+	 * @param $role
+	 *
+	 * @return array
+	 */
+	static function get_allowed_routes( $role ) {
+		$arr_option = get_option( 'disable_rest_api_options', array() );
+
+		// If we have an empty array, just return that
+		if ( empty( $arr_option ) ) {
+			return $arr_option;
+		}
+
+		$option_rules = array();
+		$allowed_rules = array();
+
+		if ( 'none' == $role && ! isset( $arr_option['roles']['none'] ) ) {
+
+			// This helps us bridge the gap from plugin version <=1.5.1 to >=1.6.
+			// We didn't use to store results based on role, but we want to return the values for "unauthenticated users" if we have recently upgraded
+			$option_rules = ( array ) DRA_Helpers::build_routes_rule( $arr_option );
+
+		} elseif ( isset( $arr_option['roles'][$role]['allow_list'] ) ) {
+
+			// If we have a definition for the currently requested role, return it
+			$option_rules = ( array ) $arr_option['roles'][$role]['allow_list'];
+
+		} else {
+
+			// If we failed all the way down to here, return a default array since we're asking for a role we don't have a definition for yet
+			$option_rules = ( array ) DRA_Helpers::build_routes_rule_for_all( true );
+
+		}
+
+		// Loop through and only save the keys that have a value pairing of true
+		foreach ( $option_rules as $key => $value ) {
+			if ( true === $value ) {
+				$allowed_rules[] = $key;
+			}
+		}
+
+		// Return our array of allowed rules
+		return $allowed_rules;
+
+	}
+
 }

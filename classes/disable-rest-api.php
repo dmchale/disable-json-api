@@ -117,11 +117,6 @@ class Disable_REST_API {
 		// If we got all the way here, we didn't find any rules that said you should be allowed to view this route
 		return false;
 
-		// TODO: Delete this before releasing new version. We may still want to steal some of this logic though
-//		return array_reduce( $this->get_allowed_routes_for_current_user( $currentRoute ), function ( $isMatched, $pattern ) use ( $currentRoute ) {
-//			return $isMatched || (bool) preg_match( '@^' . htmlspecialchars_decode( $pattern ) . '$@i', $currentRoute );
-//		}, false );
-
 	}
 
 
@@ -137,6 +132,7 @@ class Disable_REST_API {
 			'settings_page'
 		) );
 		add_filter( "plugin_action_links_$this->base_file_path", array( &$this, 'settings_link' ) );
+		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueues' ) );
 
 	}
 
@@ -172,6 +168,26 @@ class Disable_REST_API {
 
 	}
 
+	/**
+	 * Enqueues for adding CSS and JavaScript to the admin settings page
+	 */
+	public function admin_enqueues( $hook_suffix ) {
+		if ( $hook_suffix == 'settings_page_' . self::MENU_SLUG ) {
+			$admin_css_file         = WP_PLUGIN_DIR . '/' . plugin_dir_path( $this->base_file_path ) . 'css/admin.css';
+			$admin_css_url          = plugin_dir_url( $this->base_file_path ) . 'css/admin.css';
+
+			$admin_js_header_file   = WP_PLUGIN_DIR . '/' . plugin_dir_path( $this->base_file_path ) . 'js/admin-header.js';
+			$admin_js_header_url    = plugin_dir_url( $this->base_file_path ) . 'js/admin-header.js';
+
+			$admin_js_footer_file   = WP_PLUGIN_DIR . '/' . plugin_dir_path( $this->base_file_path ) . 'js/admin-footer.js';
+			$admin_js_footer_url    = plugin_dir_url( $this->base_file_path ) . 'js/admin-footer.js';
+
+			wp_enqueue_style( 'admin-css', $admin_css_url, array(), filemtime( $admin_css_file ), 'all' );
+			wp_enqueue_script( 'admin-header', $admin_js_header_url, array( 'jquery' ), filemtime( $admin_js_header_file ), false );
+			wp_enqueue_script( 'admin-footer', $admin_js_footer_url, array( 'jquery' ), filemtime( $admin_js_footer_file ), true );
+		}
+	}
+
 
 	/**
 	 * Process the admin page settings form submission
@@ -200,14 +216,27 @@ class Disable_REST_API {
 
 //		var_dump($rest_routes);
 
-		// Get back the full list of true/false routes based on the posted routes allowed
-		$rest_routes_for_setting = DRA_Helpers::build_routes_rule( $rest_routes );
-
-//		var_dump($rest_routes_for_setting);
-//		wp_die();
-
 		// Retrieve all current rules for all roles
 		$arr_option = get_option( 'disable_rest_api_options' );
+
+		// If resetting or allowlist is empty, clear the option and exit the function
+		if ( empty( $rest_routes ) || isset( $_POST['reset'] ) ) {
+
+			// Unauthorized users default to no routes allowed. All other user roles default to allowing all routes
+			$rest_routes_for_setting = ( 'none' == $role ) ? DRA_Helpers::build_routes_rule_for_all( false ) : DRA_Helpers::build_routes_rule_for_all( true );
+			$msg = esc_html__( 'All allowlists have been reset for this user role.', 'disable-json-api' );
+
+		} else {
+
+			// Get back the full list of true/false routes based on the posted routes allowed
+			$rest_routes_for_setting = DRA_Helpers::build_routes_rule( $rest_routes );
+			$msg = esc_html__( 'Allowlist settings saved for this user role.', 'disable-json-api' );
+
+		}
+
+//		var_dump($rest_routes_for_setting);
+//		var_dump($msg);
+//		wp_die();
 
 		// Save only the rules for this role back to itself
 		$default_allow = ( isset( $arr_option['roles'][$role]['default_allow'] ) ) ? $arr_option['roles'][$role]['default_allow'] : true;  // If this role doesn't exist yet, set `default_allow` to true. Yes, this is opinionated
@@ -216,15 +245,9 @@ class Disable_REST_API {
 			'allow_list'        => $rest_routes_for_setting,
 		);
 
-		// If resetting or allowlist is empty, clear the option and exit the function
-		if ( empty( $rest_routes ) || isset( $_POST['reset'] ) ) {
-			add_settings_error( 'DRA-notices', esc_attr( 'settings_updated' ), esc_html__( 'All allowlists have been removed for this user role.', 'disable-json-api' ), 'updated' );
-			return;
-		}
-
-		// Save allowlist to the Options table
+		// Save allowlist to the Options table and return with message for user
 		update_option( 'disable_rest_api_options', $arr_option );
-		add_settings_error( 'DRA-notices', esc_attr( 'settings_updated' ), esc_html__( 'Allowlist settings saved for this user role.', 'disable-json-api' ), 'updated' );
+		add_settings_error( 'DRA-notices', esc_attr( 'settings_updated' ), $msg, 'updated' );
 
 	}
 
