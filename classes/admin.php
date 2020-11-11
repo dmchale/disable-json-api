@@ -58,4 +58,42 @@ class DRA_Admin {
 		return checked( $is_route_checked, true, false );
 	}
 
+
+	/**
+	 * Displays setting for default role on admin page
+	 *
+	 * @param $role
+	 */
+	static function display_role_default_allow( $role ) {
+		$default_allow_true_checked = '';
+		$default_allow_false_checked = '';
+
+		$role_default_allow = DRA_Helpers::get_default_allow_for_role( $role );
+		if ( $role_default_allow ) {
+			$default_allow_true_checked = ' checked="checked"';
+		} else {
+			$default_allow_false_checked = ' checked="checked"';
+		}
+		?>
+		<strong><?php echo esc_html__( 'Default behavior of new/unknown routes for this role', 'disable-json-api' ); ?>:</strong>
+		<br />
+		<em><?php echo esc_html__( 'New routes can be added by plugins, themes, or updates to WordPress itself. We believe that this should always be set to "Allow" for defined user roles and "Block Access" for Unauthenticated users, but you may change it if you wish.', 'disable-json-api' ); ?></em>
+		<br />
+		<label><input type="radio" name="default_allow" value="0" <?php echo $default_allow_false_checked; ?>>&nbsp;<?php echo esc_html__( 'Block Access', 'disable-json-api' ); ?></label>
+		&nbsp;&nbsp;&nbsp;
+		<label><input type="radio" name="default_allow" value="1" <?php echo $default_allow_true_checked; ?>>&nbsp;<?php echo esc_html__( 'Allow', 'disable-json-api' ); ?></label>
+		<?php
+	}
+
+
+	/**
+	 * Displays misc settings options for the role
+	 *
+	 * @param string $role
+	 */
+	static function display_misc_settings( $role = 'none' ) {
+		self::display_role_default_allow( $role );
+	}
+
+
 }

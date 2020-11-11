@@ -211,6 +211,9 @@ class Disable_REST_API {
 			return;
 		}
 
+		// Catch the `default_allow` value for this role
+		$default_allow = ( isset( $_POST['default_allow'] ) && "1" == $_POST['default_allow'] ) ? true : false;
+
 		// Catch the routes that should be allowed
 		$rest_routes = ( isset( $_POST['rest_routes'] ) ) ? wp_unslash( $_POST['rest_routes'] ) : array();
 
@@ -223,7 +226,7 @@ class Disable_REST_API {
 		if ( empty( $rest_routes ) || isset( $_POST['reset'] ) ) {
 
 			// Unauthorized users default to no routes allowed. All other user roles default to allowing all routes
-			$rest_routes_for_setting = ( 'none' == $role ) ? DRA_Helpers::build_routes_rule_for_all( false ) : DRA_Helpers::build_routes_rule_for_all( true );
+			$rest_routes_for_setting = DRA_Helpers::build_routes_rule_for_all( $default_allow );
 			$msg = esc_html__( 'All allowlists have been reset for this user role.', 'disable-json-api' );
 
 		} else {
@@ -239,7 +242,6 @@ class Disable_REST_API {
 //		wp_die();
 
 		// Save only the rules for this role back to itself
-		$default_allow = ( isset( $arr_option['roles'][$role]['default_allow'] ) ) ? $arr_option['roles'][$role]['default_allow'] : true;  // If this role doesn't exist yet, set `default_allow` to true. Yes, this is opinionated
 		$arr_option['roles'][$role] = array(
 			'default_allow'     => $default_allow,
 			'allow_list'        => $rest_routes_for_setting,

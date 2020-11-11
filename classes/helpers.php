@@ -151,4 +151,32 @@ class DRA_Helpers {
 
 	}
 
+
+	/**
+	 * Return the setting for what the default route behavior is for a specified role
+	 *
+	 * @param $role
+	 *
+	 * @return bool
+	 */
+	static function get_default_allow_for_role( $role ) {
+		$arr_option = get_option( 'disable_rest_api_options', array() );
+
+		// If we have an empty array, return false so we deny access
+		if ( empty( $arr_option ) ) {
+			return false;
+		}
+
+		// Unauthorized users default to DONT ALLOW, authorized users default to DO ALLOW when not defined
+		$default_allow = ( 'none' == $role ) ? false : true;
+
+		if ( isset( $arr_option['roles'][$role]['default_allow'] ) ) {
+			$default_allow = $arr_option['roles'][$role]['default_allow'];
+		}
+
+		// Return our default rule
+		return ( bool ) $default_allow;
+
+	}
+
 }
