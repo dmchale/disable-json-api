@@ -44,7 +44,7 @@ class DRA_Helpers {
 			if ( ! empty( $allowed_routes ) && in_array( $route, $allowed_routes ) ) {
 				$new_value = true;
 			}
-			$new_rules[$route] = $new_value;
+			$new_rules[esc_html($route)] = $new_value;
 		}
 
 		// Return full list of all known routes, with true/false values for whether they are allowed
@@ -68,7 +68,7 @@ class DRA_Helpers {
 
 		// Loop through ALL routes, set all to the desired value
 		foreach ( $all_routes as $route ) {
-			$new_rules[$route] = $default_value;
+			$new_rules[esc_html($route)] = $default_value;
 		}
 
 		// Return full list of all known routes with values defined
@@ -145,6 +145,9 @@ class DRA_Helpers {
 				$allowed_rules[] = $key;
 			}
 		}
+
+		// Get rid of &lt; and &gt; before doing our comparisons
+		$allowed_rules = array_map( 'htmlspecialchars_decode', $allowed_rules );
 
 		// Return our array of allowed rules
 		return $allowed_rules;

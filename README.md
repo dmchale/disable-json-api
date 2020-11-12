@@ -2,11 +2,13 @@
 
 [![Code Climate](https://codeclimate.com/github/dmchale/disable-json-api/badges/gpa.svg)](https://codeclimate.com/github/dmchale/disable-json-api) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/96fc2316f7644938b72a5ffd1e882576)](https://www.codacy.com/app/dmchale/disable-json-api?utm_source=github.com&utm_medium=referral&utm_content=dmchale/disable-json-api&utm_campaign=badger) 
 
-** This is the public respository for the latest DEVELOPMENT copy of the plugin. There is absolutely no guarantee, 
+** This is the public repository for the latest DEVELOPMENT copy of the plugin. There is absolutely no guarantee, 
 express or implied, that the code you find here is a stable build. For official releases, please see the 
 WordPress repository at https://wordpress.org/plugins/disable-json-api/ **
   
-Disable the use of the REST API on your website to unauthenticated users.
+Disable the use of the REST API on your website to unauthenticated users, with the freedom to enable individual
+routes as desired. Manage route access for logged-in users based on their User Role.
+
 ## Installation
 1. Install to WordPress plugins as normal and activate.
 ## Usage
@@ -20,6 +22,7 @@ unauthenticated users.
 they wish to allow for unauthenticated users.
 4. In version 1.5 we added minimum requirements checks for WordPress and PHP. Fixed minor bug to prevent unintended 
 empty routes. Minor text & text-domain updates. 
+5. In version 1.6 we added support for per-role rules and did a number of other housekeeping updates in the code.
 ## Credits
 Authored by Dave McHale. Contributed to by Tang Rufus.
 ## License

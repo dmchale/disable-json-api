@@ -333,7 +333,7 @@ class Disable_REST_API {
 
 		// delete the old option if applicable
 		if ( $is_upgrade ) {
-			//delete_option( 'DRA_route_whitelist' );       // TODO: Make sure this line is uncommented
+			delete_option( 'DRA_route_whitelist' );
 		}
 
 	}
