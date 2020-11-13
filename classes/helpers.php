@@ -107,10 +107,11 @@ class DRA_Helpers {
 	 * Check the WP Option for our stored values of which routes should be allowed based on the supplied role
 	 *
 	 * @param $role
+	 * @param bool $get_allowed
 	 *
 	 * @return array
 	 */
-	static function get_allowed_routes( $role ) {
+	static function get_allowed_routes( $role, $get_allowed = true ) {
 		$arr_option = get_option( 'disable_rest_api_options', array() );
 
 		// If we have an empty array, just return that
@@ -141,7 +142,7 @@ class DRA_Helpers {
 
 		// Loop through and only save the keys that have a value pairing of true
 		foreach ( $option_rules as $key => $value ) {
-			if ( true === $value ) {
+			if ( $get_allowed === $value ) {
 				$allowed_rules[] = $key;
 			}
 		}
