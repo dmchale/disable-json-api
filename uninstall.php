@@ -10,9 +10,4 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	die;
 }
 
-$option_name = 'DRA_route_whitelist';
-
-delete_option( $option_name );
-
-// for site options in Multisite
-delete_site_option( $option_name );
+delete_option( 'disable_rest_api_options' );

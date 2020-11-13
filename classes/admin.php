@@ -27,14 +27,14 @@ class DRA_Admin {
 				}
 
 				$route_for_display = ( "/" == $route ) ? "/ <em>" . esc_html__( "REST API ROOT", "disable-json-api" ) . "</em>" : esc_html( $route );
-				echo "<label class='switch'><input name='rest_routes[]' value='$route' type='checkbox' id='dra_namespace_$loopCounter' onclick='dra_namespace_click(\"$route\", $loopCounter)' $checkedProp><span class='slider'></span></label><h2>&nbsp;$route_for_display</h2><ul>";
+				echo "<label class='switch'><input name='rest_routes[]' value='$route' type='checkbox' id='dra_namespace_$loopCounter' onclick='dra_namespace_click(\"$route\", $loopCounter)' $checkedProp><span class='slider'></span></label><h2><label for='dra_namespace_$loopCounter'>&nbsp;$route_for_display</label></h2><ul>";
 
 				if ( "/" == $route ) {
 					echo "<li>" . sprintf( esc_html__( "On this website, the REST API root is %s", "disable-json-api" ), "<strong>" . rest_url() . "</strong>" ) . "</li>";
 				}
 
 			} else {
-				echo "<li><label class='switch'><input name='rest_routes[]' value='$route' type='checkbox' data-namespace='$current_namespace' $checkedProp><span class='slider'></span></label>&nbsp;" . esc_html( $route ) . "</li>";
+				echo "<li><label class='switch'><input name='rest_routes[]' id='dra_namespace_$loopCounter' value='$route' type='checkbox' data-namespace='$current_namespace' $checkedProp><span class='slider'></span></label><label for='dra_namespace_$loopCounter'>&nbsp;" . esc_html( $route ) . "</label></li>";
 			}
 
 			$loopCounter ++;
