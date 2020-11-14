@@ -333,6 +333,9 @@ class Disable_REST_API {
 		// Default list of allowed routes. By default, nothing is allowed
 		$allowed_routes = ( $is_upgrade ) ? get_option( 'DRA_route_whitelist', array() ) : array();
 
+		// Decode the html encoding before passing to the function that builds the new routes. They'll get re-encoded later
+		$allowed_routes = array_map( 'html_entity_decode', $allowed_routes );
+
 		// Build the rules for this role based on the merge with the previously allowed rules (if any)
 		$new_rules = DRA_Helpers::build_routes_rule( $allowed_routes );
 
