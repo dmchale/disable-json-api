@@ -44,7 +44,6 @@
                    onclick="return confirm('<?php echo esc_attr__( "Are you sure you wish to reset all allowed routes for this user role? This will set ALL routes to be enabled or disabled, depending on the default setting of this user role.", "disable-json-api" ); ?>');">
         </div>
 
-
     </form>
 
 </div>

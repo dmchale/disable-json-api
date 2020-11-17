@@ -11,8 +11,6 @@ class DRA_Admin {
 		$all_routes         = DRA_Helpers::get_all_rest_routes();
 		$allowed_routes     = DRA_Helpers::get_allowed_routes( $role );
 
-//	    var_dump($allowed_routes);
-
 		$loopCounter       = 0;
 		$current_namespace = '';
 
@@ -94,6 +92,5 @@ class DRA_Admin {
 	static function display_misc_settings( $role = 'none' ) {
 		self::display_role_default_allow( $role );
 	}
-
 
 }

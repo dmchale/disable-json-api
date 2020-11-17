@@ -187,18 +187,10 @@ class Disable_REST_API {
 	 */
 	public function admin_enqueues( $hook_suffix ) {
 		if ( $hook_suffix == 'settings_page_' . self::MENU_SLUG ) {
-			$admin_css_file         = WP_PLUGIN_DIR . '/' . plugin_dir_path( $this->base_file_path ) . 'css/admin.css';
-			$admin_css_url          = plugin_dir_url( $this->base_file_path ) . 'css/admin.css';
-
-			$admin_js_header_file   = WP_PLUGIN_DIR . '/' . plugin_dir_path( $this->base_file_path ) . 'js/admin-header.js';
-			$admin_js_header_url    = plugin_dir_url( $this->base_file_path ) . 'js/admin-header.js';
-
-			$admin_js_footer_file   = WP_PLUGIN_DIR . '/' . plugin_dir_path( $this->base_file_path ) . 'js/admin-footer.js';
-			$admin_js_footer_url    = plugin_dir_url( $this->base_file_path ) . 'js/admin-footer.js';
-
-			wp_enqueue_style( 'admin-css', $admin_css_url, array(), filemtime( $admin_css_file ), 'all' );
-			wp_enqueue_script( 'admin-header', $admin_js_header_url, array( 'jquery' ), filemtime( $admin_js_header_file ), false );
-			wp_enqueue_script( 'admin-footer', $admin_js_footer_url, array( 'jquery' ), filemtime( $admin_js_footer_file ), true );
+			$enqueue_file_base = WP_PLUGIN_DIR . '/' . plugin_dir_path( $this->base_file_path );
+			wp_enqueue_style( 'admin-css', plugins_url( 'css/admin.css', $this->base_file_path ), array(), filemtime( $enqueue_file_base . 'css/admin.css' ), 'all' );
+			wp_enqueue_script( 'admin-header', plugins_url( 'js/admin-header.js', $this->base_file_path ), array( 'jquery' ), filemtime( $enqueue_file_base . 'js/admin-header.js' ), false );
+			wp_enqueue_script( 'admin-footer', plugins_url( 'js/admin-footer.js', $this->base_file_path ), array( 'jquery' ), filemtime( $enqueue_file_base . 'js/admin-footer.js' ), true );
 		}
 	}
 
@@ -231,8 +223,6 @@ class Disable_REST_API {
 		// Catch the routes that should be allowed
 		$rest_routes = ( isset( $_POST['rest_routes'] ) ) ? wp_unslash( $_POST['rest_routes'] ) : array();
 
-//		var_dump($rest_routes);
-
 		// Retrieve all current rules for all roles
 		$arr_option = get_option( 'disable_rest_api_options' );
 
@@ -250,10 +240,6 @@ class Disable_REST_API {
 			$msg = esc_html__( 'Allowlist settings saved for this user role.', 'disable-json-api' );
 
 		}
-
-//		var_dump($rest_routes_for_setting);
-//		var_dump($msg);
-//		wp_die();
 
 		// Save only the rules for this role back to itself
 		$arr_option['roles'][$role] = array(
