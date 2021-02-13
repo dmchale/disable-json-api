@@ -72,25 +72,22 @@ class DRA_Admin {
 		} else {
 			$default_allow_false_checked = ' checked="checked"';
 		}
-		?>
-		<strong><?php echo esc_html__( 'Default behavior of new/unknown routes for this role', 'disable-json-api' ); ?>:</strong>
-		<br />
-		<em><?php echo esc_html__( 'New routes can be added by plugins, themes, or updates to WordPress itself. We believe that this should always be set to "Allow" for defined user roles and "Block Access" for Unauthenticated users, but you may change it if you wish.', 'disable-json-api' ); ?></em>
-		<br />
-		<label><input type="radio" name="default_allow" value="0" <?php echo $default_allow_false_checked; ?>>&nbsp;<?php echo esc_html__( 'Block Access', 'disable-json-api' ); ?></label>
+
+		/* translators: name of user role */
+		echo sprintf( '<h2>%s</h2>', sprintf( esc_html__( 'Manage Rules for %s Users', 'disable-json-api' ), DRA_Helpers::get_role_name( $role ) ) );
+        ?>
+		<p style="font-style:italic;">
+            <?php
+            echo esc_html__( 'NOTE: New routes may be added in the future by plugins, themes, or WordPress itself.', 'disable-json-api' );
+            echo '<br />';
+            echo esc_html__( 'If you choose to manage access for a user role, you will have to come back and add permissions for any new routes later.', 'disable-json-api' );
+            ?>
+        </p>
+		<label><input type="radio" name="default_allow" value="0" <?php echo $default_allow_false_checked; ?>>&nbsp;<?php echo esc_html__( 'Manage REST API Access', 'disable-json-api' ); ?></label>
 		&nbsp;&nbsp;&nbsp;
-		<label><input type="radio" name="default_allow" value="1" <?php echo $default_allow_true_checked; ?>>&nbsp;<?php echo esc_html__( 'Allow', 'disable-json-api' ); ?></label>
+		<label><input type="radio" name="default_allow" value="1" <?php echo $default_allow_true_checked; ?>>&nbsp;<?php echo esc_html__( 'Allow Full REST API Access', 'disable-json-api' ); ?></label>
 		<?php
 	}
 
-
-	/**
-	 * Displays misc settings options for the role
-	 *
-	 * @param string $role
-	 */
-	static function display_misc_settings( $role = 'none' ) {
-		self::display_role_default_allow( $role );
-	}
 
 }

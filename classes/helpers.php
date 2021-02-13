@@ -171,7 +171,7 @@ class DRA_Helpers {
 			return false;
 		}
 
-		// Unauthorized users default to DONT ALLOW, authorized users default to DO ALLOW when not defined
+		// Unauthorized users default to DONT ALLOW, authorized users default to DO ALLOW
 		$default_allow = ( 'none' == $role ) ? false : true;
 
 		if ( isset( $arr_option['roles'][$role]['default_allow'] ) ) {
@@ -180,6 +180,29 @@ class DRA_Helpers {
 
 		// Return our default rule
 		return ( bool ) $default_allow;
+
+	}
+
+
+	/**
+	 * Returns the translated name of the role based on provided role slug
+	 *
+	 * @param $role
+	 *
+	 * @return string
+	 */
+	function get_role_name( $role ) {
+
+		if ( 'none' == $role ) {
+			return __( 'Unauthenticated', 'disable-rest-api' );
+		}
+
+		$editable_roles = get_editable_roles();
+		if ( isset( $editable_roles[$role] ) ) {
+			return translate_user_role( $editable_roles[$role]['name'] );
+		}
+
+		return '';
 
 	}
 

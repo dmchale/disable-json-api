@@ -33,15 +33,14 @@
 
         <div id="route-container">
             <?php DRA_Admin::display_route_checkboxes( $role ); ?>
+            <hr />
         </div>
-
-        <hr />
 
         <div id="button-container">
             <?php submit_button(); ?>
-            <input type="submit" name="reset"
+            <input type="submit" name="reset" id="dra-reset-button"
                    value="<?php echo esc_attr__( "Reset Allowed List of Routes", "disable-json-api" ); ?>"
-                   onclick="return confirm('<?php echo esc_attr__( "Are you sure you wish to reset all allowed routes for this user role? This will set ALL routes to be enabled or disabled, depending on the default setting of this user role.", "disable-json-api" ); ?>');">
+                   onclick="return confirm('<?php echo esc_attr__( "Are you sure you wish to reset all allowed routes for this user role?", "disable-json-api" ); ?>');">
         </div>
 
     </form>

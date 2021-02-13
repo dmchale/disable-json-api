@@ -8,7 +8,7 @@ class Disable_REST_API {
 
 	const MENU_SLUG = 'disable_rest_api_settings';
 	const CAPABILITY = 'manage_options';
-	const VERSION = '1.6-alpha';
+	const VERSION = '1.6-beta';
 
 	/**
 	 * Stores 'disable-json-api/disable-json-api.php' typically
