@@ -10,19 +10,16 @@ Disable the use of the REST API on your website to unauthenticated users, with t
 routes as desired. Manage route access for logged-in users based on their User Role.
 
 ## Installation
-1. Install to WordPress plugins as normal and activate.
+ 1. Install to WordPress plugins as normal and activate.
 ## Usage
-1. Basic usage of the plugin requires no configuration.
-2. Optionally, you may use the Settings page to whitelist individual routes inside the REST API based on User Role (Unauthenticated Users as well as any logged-in user)
+ 1. Basic usage of the plugin requires no configuration.
+ 2. Optionally, you may use the Settings page to whitelist individual routes inside the REST API based on User Role (Unauthenticated Users as well as any logged-in user)
 ## History
-1. Initial versions of this plugin simply used the existing filters of the REST API to disable it entirely.
-2. As of WordPress 4.7 and version 1.3 of this plugin, the plugin would forcibly throw an authentication error for 
-unauthenticated users. 
-3. In version 1.4 we introduced the Settings screen and allow site admins to whitelist routes 
-they wish to allow for unauthenticated users.
-4. In version 1.5 we added minimum requirements checks for WordPress and PHP. Fixed minor bug to prevent unintended 
-empty routes. Minor text & text-domain updates. 
-5. In version 1.6 we added support for per-role rules and did a number of other housekeeping updates in the code.
+ 1. Initial versions of this plugin simply used the existing filters of the REST API to disable it entirely.
+ 2. As of WordPress 4.7 and version 1.3 of this plugin, the plugin would forcibly throw an authentication error for unauthenticated users.
+ 3. In version 1.4 we introduced the Settings screen and allow site admins to whitelist routes  they wish to allow for unauthenticated users.
+ 4. In version 1.5 we added minimum requirements checks for WordPress and PHP. Fixed minor bug to prevent unintended empty routes. Minor text & text-domain updates.
+ 5. In version 1.6 we added support for per-role rules and did a number of other housekeeping updates in the code.
 ## Credits
 Authored by Dave McHale. Contributed to by Tang Rufus.
 ## License
