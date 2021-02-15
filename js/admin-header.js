@@ -4,4 +4,4 @@ function dra_namespace_click(namespace, id) {
     } else {
         jQuery("#route-container input[data-namespace='" + namespace + "']").prop('checked', false);
     }
-};
+}
