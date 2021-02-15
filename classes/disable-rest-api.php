@@ -29,7 +29,7 @@ class Disable_REST_API {
 		$this->base_file_path = plugin_basename( $path );
 
 		// Do logic for upgrading to 1.6 from versions less than 1.6
-		add_action( 'init', array( &$this, 'v1_6_option_check' ) );
+		add_action( 'init', array( &$this, 'option_check' ) );
 
 		// Set up admin page for plugin settings
 		add_action( 'admin_menu', array( &$this, 'define_admin_link' ) );
@@ -100,16 +100,16 @@ class Disable_REST_API {
 
 				// See if this route is specifically allowed
 				$is_currentRoute_allowed = array_reduce( DRA_Helpers::get_allowed_routes( $role ), function ( $isMatched, $pattern ) use ( $currentRoute ) {
-						return $isMatched || (bool) preg_match( '@^' . htmlspecialchars_decode( $pattern ) . '$@i', $currentRoute );
-					}, false );
+					return $isMatched || (bool) preg_match( '@^' . htmlspecialchars_decode( $pattern ) . '$@i', $currentRoute );
+				}, false );
 				if ( $is_currentRoute_allowed ) {
 					return true;
 				}
 
 				// See if this route is specifically disallowed
 				$is_currentRoute_disallowed = array_reduce( DRA_Helpers::get_allowed_routes( $role, false ), function ( $isMatched, $pattern ) use ( $currentRoute ) {
-						return $isMatched || (bool) preg_match( '@^' . htmlspecialchars_decode( $pattern ) . '$@i', $currentRoute );
-					}, false );
+					return $isMatched || (bool) preg_match( '@^' . htmlspecialchars_decode( $pattern ) . '$@i', $currentRoute );
+				}, false );
 				if ( $is_currentRoute_disallowed ) {
 					return false;
 				}
@@ -119,17 +119,15 @@ class Disable_REST_API {
 					return true;
 				}
 
-			} elseif ( true === $current_options['default_allow'] ) {
-
-				// If the user role is not defined in the settings, but the settings say that we should ALLOW routes for unknown user roles by default
-				return true;
-
 			}
 
 		}
 
-		// If we got all the way here, we didn't find any rules that said you should be allowed to view this route
-		return false;
+		// If we got all the way here, we didn't find any rules that matched the route and none of the user roles had a "default unknowns to true" rule.
+		// Most likely, we're here because the request is from a user role we don't have a definition for.
+		// Return the plugin-global setting for what should be done in the case of something we don't know what to do with.
+		// As of this writing in v1.6, this is "allow" by default since we want new User Roles to be ALLOWED access to everything until an admin chooses to take that right away.
+		return $current_options['default_allow'];
 
 	}
 
@@ -141,10 +139,13 @@ class Disable_REST_API {
 	 */
 	public function define_admin_link() {
 
-		add_options_page( esc_html__( 'Disable REST API Settings', 'disable-json-api' ), esc_html__( 'Disable REST API', 'disable-json-api' ), self::CAPABILITY, self::MENU_SLUG, array(
-			&$this,
-			'settings_page'
-		) );
+		add_options_page(
+			esc_html__( 'Disable REST API Settings', 'disable-json-api' ),
+			esc_html__( 'Disable REST API', 'disable-json-api' ),
+			self::CAPABILITY,
+			self::MENU_SLUG,
+			array( &$this, 'settings_page' )
+		);
 		add_filter( "plugin_action_links_$this->base_file_path", array( &$this, 'settings_link' ) );
 		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_enqueues' ) );
 
@@ -188,9 +189,9 @@ class Disable_REST_API {
 	public function admin_enqueues( $hook_suffix ) {
 		if ( $hook_suffix == 'settings_page_' . self::MENU_SLUG ) {
 			$enqueue_file_base = WP_PLUGIN_DIR . '/' . plugin_dir_path( $this->base_file_path );
-			wp_enqueue_style( 'admin-css', plugins_url( 'css/admin.css', $this->base_file_path ), array(), filemtime( $enqueue_file_base . 'css/admin.css' ), 'all' );
-			wp_enqueue_script( 'admin-header', plugins_url( 'js/admin-header.js', $this->base_file_path ), array( 'jquery' ), filemtime( $enqueue_file_base . 'js/admin-header.js' ), false );
-			wp_enqueue_script( 'admin-footer', plugins_url( 'js/admin-footer.js', $this->base_file_path ), array( 'jquery' ), filemtime( $enqueue_file_base . 'js/admin-footer.js' ), true );
+			wp_enqueue_style( 'dra-admin-css', plugins_url( 'css/admin.css', $this->base_file_path ), array(), filemtime( $enqueue_file_base . 'css/admin.css' ), 'all' );
+			wp_enqueue_script( 'dra-admin-header', plugins_url( 'js/admin-header.js', $this->base_file_path ), array( 'jquery' ), filemtime( $enqueue_file_base . 'js/admin-header.js' ), false );
+			wp_enqueue_script( 'dra-admin-footer', plugins_url( 'js/admin-footer.js', $this->base_file_path ), array( 'jquery' ), filemtime( $enqueue_file_base . 'js/admin-footer.js' ), true );
 		}
 	}
 
@@ -288,26 +289,23 @@ class Disable_REST_API {
 	/**
 	 * Helper function to migrate from pre-version-1.6 to the new option
 	 */
-	public function v1_6_option_check() {
+	public function option_check() {
 
 		// If our new option already exists, we can bail
 		if ( get_option( 'disable_rest_api_options') ) {
 			return;
 		}
 
-		// Migrate from the old Options variable to the new one
-		$this->create_settings_option( true );
+		// Make sure we have a default option defined
+		$this->create_settings_option();
 
 	}
 
 
 	/**
 	 * Create settings option for the plugin
-	 * Optionally migrate data from older versions of the plugin and clean up the old Option if applicable
-	 *
-	 * @param false $is_upgrade
 	 */
-	private function create_settings_option( $is_upgrade = false ) {
+	private function create_settings_option() {
 
 		// Define the basic structure of our new option
 		$arr_option = array(
@@ -316,26 +314,26 @@ class Disable_REST_API {
 			'roles'             => array(),             // array of the user roles in this install of wordpress
 		);
 
-		// Default list of allowed routes. By default, nothing is allowed
-		$allowed_routes = ( $is_upgrade ) ? get_option( 'DRA_route_whitelist', array() ) : array();
+		// Default list of allowed routes. By default, nothing is allowed because we're checking for our pre-v1.6 option here for migration purposes
+		$pre_1_6_allowed_routes = get_option( 'DRA_route_whitelist', array() );
 
 		// Decode the html encoding before passing to the function that builds the new routes. They'll get re-encoded later
-		$allowed_routes = array_map( 'html_entity_decode', $allowed_routes );
+		$pre_1_6_allowed_routes = array_map( 'html_entity_decode', $pre_1_6_allowed_routes );
 
 		// Build the rules for this role based on the merge with the previously allowed rules (if any)
-		$new_rules = DRA_Helpers::build_routes_rule( $allowed_routes );
+		$new_unauthenticated_rules = DRA_Helpers::build_routes_rule( $pre_1_6_allowed_routes );
 
 		// Define the "unauthenticated" rules based on the old option value (or default value of "nothing")
 		$arr_option['roles']['none'] = array(
 			'default_allow'     => false,
-			'allow_list'        => $new_rules,
+			'allow_list'        => $new_unauthenticated_rules,
 		);
 
 		// Save new option
 		update_option( 'disable_rest_api_options', $arr_option );
 
 		// delete the old option if applicable
-		if ( $is_upgrade ) {
+		if ( ! empty( $pre_1_6_allowed_routes ) ) {
 			delete_option( 'DRA_route_whitelist' );
 		}
 

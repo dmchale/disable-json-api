@@ -191,10 +191,10 @@ class DRA_Helpers {
 	 *
 	 * @return string
 	 */
-	function get_role_name( $role ) {
+	static function get_role_name( $role ) {
 
 		if ( 'none' == $role ) {
-			return __( 'Unauthenticated', 'disable-rest-api' );
+			return __( 'Unauthenticated', 'disable-json-api' );
 		}
 
 		$editable_roles = get_editable_roles();
