@@ -1,6 +1,6 @@
 # Disable REST API
 
-[![Code Climate](https://codeclimate.com/github/dmchale/disable-json-api/badges/gpa.svg)](https://codeclimate.com/github/dmchale/disable-json-api) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/96fc2316f7644938b72a5ffd1e882576)](https://www.codacy.com/app/dmchale/disable-json-api?utm_source=github.com&utm_medium=referral&utm_content=dmchale/disable-json-api&utm_campaign=badger) 
+[![Code Climate](https://codeclimate.com/github/dmchale/disable-json-api/badges/gpa.svg)](https://codeclimate.com/github/dmchale/disable-json-api) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/9d636a2e10534acc98531cde0625a7e7)](https://www.codacy.com/gh/dmchale/disable-json-api/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=dmchale/disable-json-api&amp;utm_campaign=Badge_Grade)
 
 ** This is the public repository for the latest DEVELOPMENT copy of the plugin. There is absolutely no guarantee, 
 express or implied, that the code you find here is a stable build. For official releases, please see the 
