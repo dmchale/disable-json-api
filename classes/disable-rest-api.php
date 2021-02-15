@@ -188,10 +188,9 @@ class Disable_REST_API {
 	 */
 	public function admin_enqueues( $hook_suffix ) {
 		if ( $hook_suffix == 'settings_page_' . self::MENU_SLUG ) {
-			$enqueue_file_base = WP_PLUGIN_DIR . '/' . plugin_dir_path( $this->base_file_path );
-			wp_enqueue_style( 'dra-admin-css', plugins_url( 'css/admin.css', $this->base_file_path ), array(), filemtime( $enqueue_file_base . 'css/admin.css' ), 'all' );
-			wp_enqueue_script( 'dra-admin-header', plugins_url( 'js/admin-header.js', $this->base_file_path ), array( 'jquery' ), filemtime( $enqueue_file_base . 'js/admin-header.js' ), false );
-			wp_enqueue_script( 'dra-admin-footer', plugins_url( 'js/admin-footer.js', $this->base_file_path ), array( 'jquery' ), filemtime( $enqueue_file_base . 'js/admin-footer.js' ), true );
+			wp_enqueue_style( 'dra-admin-css', plugins_url( 'css/admin.css', $this->base_file_path ), array(), self::VERSION, 'all' );
+			wp_enqueue_script( 'dra-admin-header', plugins_url( 'js/admin-header.js', $this->base_file_path ), array( 'jquery' ), self::VERSION, false );
+			wp_enqueue_script( 'dra-admin-footer', plugins_url( 'js/admin-footer.js', $this->base_file_path ), array( 'jquery' ), self::VERSION, true );
 		}
 	}
 
