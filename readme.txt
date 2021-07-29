@@ -3,8 +3,8 @@ Contributors: dmchale, tangrufus
 Tags: admin, api, json, REST, rest-api, disable
 Requires at least: 4.4
 Requires PHP: 5.6
-Tested up to: 5.6
-Stable tag: 1.6
+Tested up to: 5.8
+Stable tag: 1.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -45,6 +45,12 @@ This plugin is ONLY meant to disable endpoints accessible via the core REST API 
 3. The Settings page lets you selectively whitelist endpoints registered with the REST API, on a per-user-role basis.
 
 == Changelog ==
+
+= 1.7 =
+* Tested up to WP v5.8
+* Replace use of filemtime() with plugin version number for static file enqueues. Props @tangrufus for bringing this up!
+* Fixed logic bug for role-based default_allow rules. Props @msp1974 for the report!
+* Few small code-style updates
 
 = 1.6 =
 * Tested up to WP v5.6
