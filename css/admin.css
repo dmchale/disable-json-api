@@ -11,3 +11,25 @@ input:checked + .slider::before { -webkit-transform: translateX(16px); -ms-trans
 div#select-container, div#default-allow-container, div#route-container { padding: 1em 0 1em 0; }
 div#route-container { display: none; }
 input#dra-reset-button { display: none; }
+
+#select-container {
+    font-size: 0.9375rem;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+}
+#select-container select {
+    padding-top: .125rem;
+    padding-bottom: 0.125rem;
+    font-size: 0.9375rem;
+    min-width: 14rem;
+    margin-top: .5rem;
+}
+
+#button-container .button {
+    font-size: 0.9375rem;
+}
+#button-container p.submit {
+    padding-bottom: 1.75rem;
+    margin-top: 0;
+}
