@@ -20,12 +20,14 @@ class DRA_Admin {
 
 			if ( $is_route_namespace || "/" == $route ) {
 				$current_namespace = $route;
-				if ( 0 != $loopCounter ) {
-					echo "</ul>";
-				}
+				$block_class = ( "/" == $route ) ? "block-style" : "accordion-container";
+				$accordion_button = ( "/" == $route ) ? '' : "<button type='button' class='accordion-expand'></button>";
 
+				if ( 0 != $loopCounter ) {
+					echo "</ul></div>";
+				}
 				$route_for_display = ( "/" == $route ) ? "/ <em>" . esc_html__( "REST API ROOT", "disable-json-api" ) . "</em>" : esc_html( $route );
-				echo "<label class='switch'><input name='rest_routes[]' value='$route' type='checkbox' id='dra_namespace_$loopCounter' onclick='dra_namespace_click(\"$route\", $loopCounter)' $checkedProp><span class='slider'></span></label><h2><label for='dra_namespace_$loopCounter'>&nbsp;$route_for_display</label></h2><ul>";
+				echo "<div class='". $block_class . "'><div class='accordion-top'><div class='accordion-label'><label class='switch'><input name='rest_routes[]' value='$route' type='checkbox' id='dra_namespace_$loopCounter' onclick='dra_namespace_click(\"$route\", $loopCounter)' $checkedProp><span class='slider'></span></label><h2><label for='dra_namespace_$loopCounter'>&nbsp;$route_for_display</label></h2></div>" . $accordion_button . "</div><ul>";
 
 				if ( "/" == $route ) {
 					echo "<li>" . sprintf( esc_html__( "On this website, the REST API root is %s", "disable-json-api" ), "<strong>" . rest_url() . "</strong>" ) . "</li>";
@@ -37,7 +39,7 @@ class DRA_Admin {
 
 			$loopCounter ++;
 		}
-		echo "</ul>";
+		echo "</ul></div>";
 	}
 
 
