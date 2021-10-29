@@ -1,4 +1,4 @@
-h2 { display: inline-block; margin: 0; }
+h2 { display: inline; }
 #route-container ul li { padding-left: 20px; }
 #route-container em { font-size: 0.8em; }
 .switch { position: relative; display: inline-block; width: 38px; height: 20px; margin-right: 0.4em; }
@@ -26,88 +26,6 @@ input#dra-reset-button { display: none; }
     margin-top: .5rem;
 }
 
-#button-container .button {
-    font-size: 0.9375rem;
-}
-#button-container p.submit {
-    padding-bottom: 1.75rem;
-    margin-top: 0;
-}
-
-
-.block-style, .accordion-container {
-    position: relative;
-    background: #FFF;
-    margin: 5px 0 1rem;
-    box-shadow:
-        0px 0.7px 0.5px rgba(0, 0, 0, 0.028),
-        0px 2.5px 1.7px rgba(0, 0, 0, 0.042),
-        0px 11px 9px rgba(0, 0, 0, 0.07);
-}
-
-.accordion-top {position: relative;}
-
-.accordion-top .accordion-label {
-    display: inline-flex;
-    position: relative;
-    z-index: 2;
-    align-items: center;
-    padding: .75rem .5rem .75rem .5rem;
-}
-.accordion-top label {
-    vertical-align: text-top;
-}
-
-.accordion-expand {
-    position: absolute;
-    background: transparent;
-    right: 0;
-    border: 0;
-    width: 100%;
-    top: 0;
-    height: 100%;
-    padding: 0;
-    z-index: 1;
-    transform-origin: right;
-    transition: all .2s ease;
-}
-.accordion-expand:before {
-    content: "\276F";
-    position: absolute;
-    transform: rotate(90deg);
-    top: 12px;
-    right: 1.5rem;
-    font-size: 1rem;
-    transition: all .3s ease;
-}
-.accordion-container.expanded .accordion-expand:before {
-    transform: rotate(270deg);
-}
-
-.accordion-expand:hover:before {
-    color: #007cba;
-}
-.accordion-container:not(.expanded) .accordion-expand:hover:before {
-    transform: rotate(90deg) scale(1.25);
-}
-.accordion-container.expanded .accordion-expand:hover:before {
-    transform: rotate(270deg) scale(1.25);
-}
-
-.accordion-container ul {
-    height: 0;
-    overflow: hidden;
-    position: relative;
-    top: 0;
-    transition: all .3s ease;
-}
-.block-style ul, .accordion-container ul {
-    margin: 0;
-}
-.accordion-container.expanded ul, .block-style ul {
-    padding: .25rem 0 .5rem;
-
-}
 #button-container .button {
     font-size: 0.9375rem;
 }
