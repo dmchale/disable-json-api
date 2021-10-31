@@ -14,10 +14,14 @@ jQuery(function () {
   
       if(!accordion.hasClass("expanded")) {
         accordion.addClass("expanded");
-        answer.css({"height": scrollHeight});
+        jQuery(this).attr('aria-expanded', 'true');
+        answer.css({"height": scrollHeight}).attr('aria-hidden', 'false').focus();
+        answer.find('input').prop('disabled', false);
       } else {
         accordion.removeClass("expanded");
-        answer.css({"height": "0"});
+        answer.css({"height": "0"}).attr('aria-hidden', 'true');
+        answer.find('input').prop('disabled', true);
+        jQuery(this).attr('aria-expanded', 'false');
       }
     });
   });
