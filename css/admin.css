@@ -1,8 +1,9 @@
 h2 { display: inline-block; margin: 0; }
 #route-container ul li { padding-left: 20px; }
 #route-container em { font-size: 0.8em; }
-.switch { position: relative; display: inline-block; width: 38px; height: 20px; margin-right: 0.4em; }
+.switch { position: relative; display: inline-block; width: 38px; height: 20px; margin-right: 0.4em; transition: transform .2s ease; }
 .switch input { opacity: 0; width: 0; height: 0; }
+.switch:focus-within, .switch:hover {transform: scale(1.15);}
 .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; -webkit-transition: 0.4s; transition: 0.4s; border-radius: 18px; display:inline; }
 .slider::before { position: absolute; content: ""; height: 14px; width: 14px; left: 4px; bottom: 3px; background-color: #fff; -webkit-transition: 0.4s; transition: 0.4s; border-radius: 50%; }
 input:checked + .slider { background-color: #2196f3; }
