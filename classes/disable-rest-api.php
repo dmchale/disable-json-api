@@ -273,7 +273,8 @@ class Disable_REST_API {
 	 * @return WP_Error
 	 */
 	private function get_wp_error( $access ) {
-		$error_message = esc_html__( 'DRA: Only authenticated users can access the REST API.', 'disable-json-api' );
+        $dra_error_message = apply_filters( 'dra_error_message', 'DRA: Only authenticated users can access the REST API.', $access );
+		$error_message = esc_html__( $dra_error_message, 'disable-json-api' );
 
 		if ( is_wp_error( $access ) ) {
 			$access->add( 'rest_cannot_access', $error_message, array( 'status' => rest_authorization_required_code() ) );
