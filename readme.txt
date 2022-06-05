@@ -46,6 +46,11 @@ This plugin is ONLY meant to disable endpoints accessible via the core REST API 
 
 == Changelog ==
 
+= 1.8 =
+* Tested up to WP v6.0
+* UI/UX updates to admin page, adding accordions to top level routes and a11y improvements for keyboards & screen readers. Props @skaudallas
+* Added `dra_error_message` filter so devs can customize the access error message
+
 = 1.7 =
 * Tested up to WP v5.8
 * Replace use of filemtime() with plugin version number for static file enqueues. Props @tangrufus for bringing this up!
@@ -98,6 +103,9 @@ This plugin is ONLY meant to disable endpoints accessible via the core REST API 
 * Initial Release
 
 == Upgrade Notice ==
+
+= 1.8 =
+* Improved UI/UX of admin settings page to better manage routes
 
 = 1.6 =
 * By popular request... now with User Role support!
