@@ -72,7 +72,9 @@ class Disable_REST_API {
 	 * @return string
 	 */
 	private function get_current_route() {
-		$rest_route = $GLOBALS['wp']->query_vars['rest_route'];
+		$rest_route = isset($GLOBALS['wp']->query_vars['rest_route']) ?
+			$GLOBALS['wp']->query_vars['rest_route'] :
+			'';
 
 		return ( empty( $rest_route ) || '/' == $rest_route ) ?
 			$rest_route :
