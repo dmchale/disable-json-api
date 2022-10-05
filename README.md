@@ -20,7 +20,8 @@ routes as desired. Manage route access for logged-in users based on their User R
  3. In version 1.4 we introduced the Settings screen and allow site admins to whitelist routes  they wish to allow for unauthenticated users.
  4. In version 1.5 we added minimum requirements checks for WordPress and PHP. Fixed minor bug to prevent unintended empty routes. Minor text & text-domain updates.
  5. In version 1.6 we added support for per-role rules and did a number of other housekeeping updates in the code.
- 6. In version 1.7 we changed how we cache-bust static file enqueues, and repaired a logic bug in the role-based default_allow checks. 
+ 6. In version 1.7 we changed how we cache-bust static file enqueues, and repaired a logic bug in the role-based default_allow checks.
+ 7. In version 1.8 we made changes to the admin setting page display; provided a new filter so devs can customize the error message sent back if you fail the authentication check; updated minimum requirements to PHP 5.6 (up from 5.3) and WordPress 4.9 (up from WP 4.4).
 ## Credits
 Authored by Dave McHale. Contributed to by Tang Rufus.
 ## License

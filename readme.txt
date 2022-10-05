@@ -1,10 +1,10 @@
 === Disable REST API ===
 Contributors: dmchale, tangrufus
 Tags: admin, api, json, REST, rest-api, disable
-Requires at least: 4.4
+Requires at least: 4.9
 Requires PHP: 5.6
-Tested up to: 5.8
-Stable tag: 1.7
+Tested up to: 6.0
+Stable tag: 1.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -50,6 +50,7 @@ This plugin is ONLY meant to disable endpoints accessible via the core REST API 
 * Tested up to WP v6.0
 * UI/UX updates to admin page, adding accordions to top level routes and a11y improvements for keyboards & screen readers. Props @skaudallas
 * Added `dra_error_message` filter so devs can customize the access error message
+* Changed minimum requirements to PHP 5.6 (up from 5.3) and WordPress 4.9 (up from 4.4)
 
 = 1.7 =
 * Tested up to WP v5.8
