@@ -1,4 +1,5 @@
 <?php
+
 class DRA_Admin {
 
 	/**
@@ -7,9 +8,9 @@ class DRA_Admin {
 	 * @param string $role
 	 */
 	static function display_route_checkboxes( $role = 'none' ) {
-		$all_namespaces     = DRA_Helpers::get_all_rest_namespaces();
-		$all_routes         = DRA_Helpers::get_all_rest_routes();
-		$allowed_routes     = DRA_Helpers::get_allowed_routes( $role );
+		$all_namespaces = DRA_Helpers::get_all_rest_namespaces();
+		$all_routes     = DRA_Helpers::get_all_rest_routes();
+		$allowed_routes = DRA_Helpers::get_allowed_routes( $role );
 
 		$loopCounter       = 0;
 		$current_namespace = '';
@@ -19,16 +20,16 @@ class DRA_Admin {
 			$checkedProp        = self::get_route_checked_prop( $route, $allowed_routes );
 
 			if ( $is_route_namespace || "/" == $route ) {
-				$current_namespace = $route;
-				$block_class = ( "/" == $route ) ? "block-style" : "accordion-container";
-				$accordion_button = ( "/" == $route ) ? "" : "<button type='button' class='accordion-expand' aria-label='expand or collapse accordion' aria-expanded='false' aria-controls='ar" . $loopCounter . "'></button>";
+				$current_namespace     = $route;
+				$block_class           = ( "/" == $route ) ? "block-style" : "accordion-container";
+				$accordion_button      = ( "/" == $route ) ? "" : "<button type='button' class='accordion-expand' aria-label='expand or collapse accordion' aria-expanded='false' aria-controls='ar" . $loopCounter . "'></button>";
 				$accessibility_options = ( "/" == $route ) ? "" : " aria-labelledby='al" . $loopCounter . "' id='ar" . $loopCounter . "' aria-hidden='true'  tabindex='-1'";
 
 				if ( 0 != $loopCounter ) {
 					echo "</ul></div>";
 				}
 				$route_for_display = ( "/" == $route ) ? "/ <em>" . esc_html__( "REST API ROOT", "disable-json-api" ) . "</em>" : esc_html( $route );
-				echo "<div class='". $block_class . "'><div class='accordion-top'><div class='accordion-label'><label class='switch'><input name='rest_routes[]' value='$route' type='checkbox' id='dra_namespace_$loopCounter' onclick='dra_namespace_click(\"$route\", $loopCounter)' $checkedProp><span class='slider'></span></label><h2 id='al" . $loopCounter . "'><label for='dra_namespace_$loopCounter'>&nbsp;$route_for_display</label></h2></div>" . $accordion_button . "</div><ul" . $accessibility_options . ">";
+				echo "<div class='" . $block_class . "'><div class='accordion-top'><div class='accordion-label'><label class='switch'><input name='rest_routes[]' value='$route' type='checkbox' id='dra_namespace_$loopCounter' onclick='dra_namespace_click(\"$route\", $loopCounter)' $checkedProp><span class='slider'></span></label><h2 id='al" . $loopCounter . "'><label for='dra_namespace_$loopCounter'>&nbsp;$route_for_display</label></h2></div>" . $accordion_button . "</div><ul" . $accessibility_options . ">";
 
 				if ( "/" == $route ) {
 					echo "<li>" . sprintf( esc_html__( "On this website, the REST API root is %s", "disable-json-api" ), "<strong>" . rest_url() . "</strong>" ) . "</li>";
@@ -66,7 +67,7 @@ class DRA_Admin {
 	 * @param $role
 	 */
 	static function display_role_default_allow( $role ) {
-		$default_allow_true_checked = '';
+		$default_allow_true_checked  = '';
 		$default_allow_false_checked = '';
 
 		$role_default_allow = DRA_Helpers::get_default_allow_for_role( $role );
@@ -78,17 +79,17 @@ class DRA_Admin {
 
 		/* translators: name of user role */
 		echo sprintf( '<h2>%s</h2>', sprintf( esc_html__( 'Manage Rules for %s Users', 'disable-json-api' ), DRA_Helpers::get_role_name( $role ) ) );
-        ?>
-		<p style="font-style:italic;">
-            <?php
-            echo esc_html__( 'NOTE: New routes may be added in the future by plugins, themes, or WordPress itself.', 'disable-json-api' );
-            echo '<br />';
-            echo esc_html__( 'If you choose to manage access for a user role, you will have to come back and add permissions for any new routes later.', 'disable-json-api' );
-            ?>
+		?>
+        <p style="font-style:italic;">
+			<?php
+			echo esc_html__( 'NOTE: New routes may be added in the future by plugins, themes, or WordPress itself.', 'disable-json-api' );
+			echo '<br />';
+			echo esc_html__( 'If you choose to manage access for a user role, you will have to come back and add permissions for any new routes later.', 'disable-json-api' );
+			?>
         </p>
-		<label><input type="radio" name="default_allow" value="0" <?php echo $default_allow_false_checked; ?>>&nbsp;<?php echo esc_html__( 'Manage REST API Access', 'disable-json-api' ); ?></label>
-		&nbsp;&nbsp;&nbsp;
-		<label><input type="radio" name="default_allow" value="1" <?php echo $default_allow_true_checked; ?>>&nbsp;<?php echo esc_html__( 'Allow Full REST API Access', 'disable-json-api' ); ?></label>
+        <label><input type="radio" name="default_allow" value="0" <?php echo $default_allow_false_checked; ?>>&nbsp;<?php echo esc_html__( 'Manage REST API Access', 'disable-json-api' ); ?></label>
+        &nbsp;&nbsp;&nbsp;
+        <label><input type="radio" name="default_allow" value="1" <?php echo $default_allow_true_checked; ?>>&nbsp;<?php echo esc_html__( 'Allow Full REST API Access', 'disable-json-api' ); ?></label>
 		<?php
 	}
 

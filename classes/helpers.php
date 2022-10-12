@@ -1,4 +1,5 @@
 <?php
+
 class DRA_Helpers {
 
 	/**
@@ -7,7 +8,8 @@ class DRA_Helpers {
 	 * @return array
 	 */
 	static function get_all_rest_routes() {
-		$wp_rest_server     = rest_get_server();
+		$wp_rest_server = rest_get_server();
+
 		return array_keys( $wp_rest_server->get_routes() );
 	}
 
@@ -18,7 +20,8 @@ class DRA_Helpers {
 	 * @return string[]
 	 */
 	static function get_all_rest_namespaces() {
-		$wp_rest_server     = rest_get_server();
+		$wp_rest_server = rest_get_server();
+
 		return $wp_rest_server->get_namespaces();
 	}
 
@@ -44,7 +47,7 @@ class DRA_Helpers {
 			if ( ! empty( $allowed_routes ) && in_array( $route, $allowed_routes ) ) {
 				$new_value = true;
 			}
-			$new_rules[esc_html($route)] = $new_value;
+			$new_rules[ esc_html( $route ) ] = $new_value;
 		}
 
 		// Return full list of all known routes, with true/false values for whether they are allowed
@@ -68,7 +71,7 @@ class DRA_Helpers {
 
 		// Loop through ALL routes, set all to the desired value
 		foreach ( $all_routes as $route ) {
-			$new_rules[esc_html($route)] = $default_value;
+			$new_rules[ esc_html( $route ) ] = $default_value;
 		}
 
 		// Return full list of all known routes with values defined
@@ -119,7 +122,7 @@ class DRA_Helpers {
 			return $arr_option;
 		}
 
-		$option_rules = array();
+		$option_rules  = array();
 		$allowed_rules = array();
 
 		if ( 'none' == $role && ! isset( $arr_option['roles']['none'] ) ) {
@@ -128,10 +131,10 @@ class DRA_Helpers {
 			// We didn't use to store results based on role, but we want to return the values for "unauthenticated users" if we have recently upgraded
 			$option_rules = ( array ) DRA_Helpers::build_routes_rule( $arr_option );
 
-		} elseif ( isset( $arr_option['roles'][$role]['allow_list'] ) ) {
+		} elseif ( isset( $arr_option['roles'][ $role ]['allow_list'] ) ) {
 
 			// If we have a definition for the currently requested role, return it
-			$option_rules = ( array ) $arr_option['roles'][$role]['allow_list'];
+			$option_rules = ( array ) $arr_option['roles'][ $role ]['allow_list'];
 
 		} else {
 
@@ -174,8 +177,8 @@ class DRA_Helpers {
 		// Unauthorized users default to DONT ALLOW, authorized users default to DO ALLOW
 		$default_allow = ( 'none' == $role ) ? false : true;
 
-		if ( isset( $arr_option['roles'][$role]['default_allow'] ) ) {
-			$default_allow = $arr_option['roles'][$role]['default_allow'];
+		if ( isset( $arr_option['roles'][ $role ]['default_allow'] ) ) {
+			$default_allow = $arr_option['roles'][ $role ]['default_allow'];
 		}
 
 		// Return our default rule
@@ -198,8 +201,8 @@ class DRA_Helpers {
 		}
 
 		$editable_roles = get_editable_roles();
-		if ( isset( $editable_roles[$role] ) ) {
-			return translate_user_role( $editable_roles[$role]['name'] );
+		if ( isset( $editable_roles[ $role ] ) ) {
+			return translate_user_role( $editable_roles[ $role ]['name'] );
 		}
 
 		return '';

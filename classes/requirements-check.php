@@ -14,8 +14,8 @@ class DRA_Requirements_Check {
 
 	public function __construct( $args ) {
 		foreach ( array( 'title', 'php', 'wp', 'file' ) as $setting ) {
-			if ( isset( $args[$setting] ) ) {
-				$this->$setting = $args[$setting];
+			if ( isset( $args[ $setting ] ) ) {
+				$this->$setting = $args[ $setting ];
 			}
 		}
 	}
@@ -25,6 +25,7 @@ class DRA_Requirements_Check {
 		if ( ! $passes ) {
 			add_action( 'admin_notices', array( $this, 'deactivate' ) );
 		}
+
 		return $passes;
 	}
 
@@ -39,6 +40,7 @@ class DRA_Requirements_Check {
 			return true;
 		} else {
 			add_action( 'admin_notices', array( $this, 'php_version_notice' ) );
+
 			return false;
 		}
 	}
@@ -58,6 +60,7 @@ class DRA_Requirements_Check {
 			return true;
 		} else {
 			add_action( 'admin_notices', array( $this, 'wp_version_notice' ) );
+
 			return false;
 		}
 	}
