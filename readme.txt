@@ -3,7 +3,7 @@ Contributors: dmchale, tangrufus
 Tags: admin, api, json, REST, rest-api, disable
 Requires at least: 4.9
 Requires PHP: 5.6
-Tested up to: 6.0
+Tested up to: 6.1
 Stable tag: 1.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -47,7 +47,7 @@ This plugin is ONLY meant to disable endpoints accessible via the core REST API 
 == Changelog ==
 
 = 1.8 =
-* Tested up to WP v6.0
+* Tested up to WP v6.1
 * UI/UX updates to admin page, adding accordions to top level routes and a11y improvements for keyboards & screen readers. Props @skaudallas
 * Added `dra_error_message` filter so devs can customize the access error message
 * Fixed bug that caused fatal errors if activating plugin on installations running the LearnPress plugin
