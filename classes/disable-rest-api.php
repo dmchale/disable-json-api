@@ -30,7 +30,7 @@ class Disable_REST_API {
 		$this->base_file_path = plugin_basename( $path );
 
 		// Do logic for upgrading to 1.6 from versions less than 1.6
-		add_action( 'init', array( &$this, 'option_check' ) );
+		add_action( 'wp_loaded', array( &$this, 'option_check' ) );
 
 		// Set up admin page for plugin settings
 		add_action( 'admin_menu', array( &$this, 'define_admin_link' ) );
