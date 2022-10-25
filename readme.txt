@@ -50,6 +50,7 @@ This plugin is ONLY meant to disable endpoints accessible via the core REST API 
 * Tested up to WP v6.0
 * UI/UX updates to admin page, adding accordions to top level routes and a11y improvements for keyboards & screen readers. Props @skaudallas
 * Added `dra_error_message` filter so devs can customize the access error message
+* Fixed bug that caused fatal errors if activating plugin on installations running the LearnPress plugin
 * Changed minimum requirements to PHP 5.6 (up from 5.3) and WordPress 4.9 (up from 4.4)
 
 = 1.7 =
