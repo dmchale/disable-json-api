@@ -37,8 +37,8 @@
         </div>
 
         <div id="button-container">
-			<?php submit_button(); ?>
-            <input type="submit" name="reset" id="dra-reset-button" class="button button-secondary"
+            <?php submit_button(); ?>
+            <input type="submit" name="reset" id="dra-reset-button"
                    value="<?php esc_attr_e( "Reset Allowed List of Routes", "disable-json-api" ); ?>"
                    onclick="return confirm('<?php esc_attr_e( "Are you sure you wish to reset all allowed routes for this user role?", "disable-json-api" ); ?>');">
         </div>
