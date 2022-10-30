@@ -10,7 +10,7 @@
     <hr/>
 
     <div id="select-container">
-        <label for="dra-role"><?php esc_html_e( "Rules for", "disable-json-api" ); ?>:</label> <select name="role" id="dra-role">
+        <?php esc_html_e( "Rules for", "disable-json-api" ); ?>: <select name="role" id="dra-role">
             <option value="none"><?php esc_html_e( "Unauthenticated Users", "disable-json-api" ); ?></option>
 			<?php
 			$role = ( isset( $_GET['role'] ) ) ? $_GET['role'] : 'none';
