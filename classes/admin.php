@@ -20,28 +20,25 @@ class DRA_Admin {
 			$checkedProp        = self::get_route_checked_prop( $route, $allowed_routes );
 
 			if ( $is_route_namespace || "/" == $route ) {
-				$current_namespace     = $route;
-				$block_class           = ( "/" == $route ) ? "block-style" : "accordion-container";
-				$accordion_button      = ( "/" == $route ) ? "" : "<button type='button' class='accordion-expand' aria-label='expand or collapse accordion' aria-expanded='false' aria-controls='ar" . $loopCounter . "'></button>";
-				$accessibility_options = ( "/" == $route ) ? "" : " aria-labelledby='al" . $loopCounter . "' id='ar" . $loopCounter . "' aria-hidden='true'  tabindex='-1'";
-
+				$current_namespace = $route;
 				if ( 0 != $loopCounter ) {
-					echo "</ul></div>";
+					echo "</ul>";
 				}
+
 				$route_for_display = ( "/" == $route ) ? "/ <em>" . esc_html__( "REST API ROOT", "disable-json-api" ) . "</em>" : esc_html( $route );
-				echo "<div class='" . $block_class . "'><div class='accordion-top'><div class='accordion-label'><label class='switch'><input name='rest_routes[]' value='$route' type='checkbox' id='dra_namespace_$loopCounter' onclick='dra_namespace_click(\"$route\", $loopCounter)' $checkedProp><span class='slider'></span></label><h2 id='al" . $loopCounter . "'><label for='dra_namespace_$loopCounter'>&nbsp;$route_for_display</label></h2></div>" . $accordion_button . "</div><ul" . $accessibility_options . ">";
+				echo "<label class='switch'><input name='rest_routes[]' value='$route' type='checkbox' id='dra_namespace_$loopCounter' onclick='dra_namespace_click(\"$route\", $loopCounter)' $checkedProp><span class='slider'></span></label><h2><label for='dra_namespace_$loopCounter'>&nbsp;$route_for_display</label></h2><ul>";
 
 				if ( "/" == $route ) {
 					echo "<li>" . sprintf( esc_html__( "On this website, the REST API root is %s", "disable-json-api" ), "<strong>" . rest_url() . "</strong>" ) . "</li>";
 				}
 
 			} else {
-				echo "<li><label class='switch'><input name='rest_routes[]'  disabled id='dra_namespace_$loopCounter' value='$route' type='checkbox' data-namespace='$current_namespace' $checkedProp><span class='slider'></span></label><label for='dra_namespace_$loopCounter'>&nbsp;" . esc_html( $route ) . "</label></li>";
+				echo "<li><label class='switch'><input name='rest_routes[]' id='dra_namespace_$loopCounter' value='$route' type='checkbox' data-namespace='$current_namespace' $checkedProp><span class='slider'></span></label><label for='dra_namespace_$loopCounter'>&nbsp;" . esc_html( $route ) . "</label></li>";
 			}
 
 			$loopCounter ++;
 		}
-		echo "</ul></div>";
+		echo "</ul>";
 	}
 
 
