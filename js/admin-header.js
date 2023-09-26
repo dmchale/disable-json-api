@@ -1,7 +1,7 @@
 function dra_namespace_click(namespace, id) {
-    if (jQuery('#dra_namespace_' + id).is(":checked")) {
-        jQuery("#route-container input[data-namespace='" + namespace + "']").prop('checked', true);
+    if (document.getElementById('#dra_namespace_' + id).checked) {
+        document.getElementById("#route-container input[data-namespace='" + namespace + "']").checked = true;
     } else {
-        jQuery("#route-container input[data-namespace='" + namespace + "']").prop('checked', false);
+        document.getElementById("#route-container input[data-namespace='" + namespace + "']").checked = false;
     }
 }

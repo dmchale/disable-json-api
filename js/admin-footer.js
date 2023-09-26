@@ -1,22 +1,32 @@
-function maybe_show_dra_routes() {
-    let manage = jQuery('input[name=default_allow]:checked').val().toString();
+function dra_set_route_display( new_display ) {
+    document.querySelectorAll('div#route-container, input#dra-reset-button').forEach( el => {
+        el.addEventListener( 'click', () => {
+            el.style.display = new_display;
+        });
+    });
+}
+
+function dra_maybe_show_routes() {
+    let manage = document.querySelector('input[name=default_allow]:checked').value.toString();
     if ( '0' === manage ) {
-        jQuery('div#route-container, input#dra-reset-button').css( 'display', 'block' );
+        dra_set_route_display( 'block' );
     } else {
-        jQuery('div#route-container, input#dra-reset-button').css( 'display', 'none' );
+        dra_set_route_display( 'none' );
     }
 }
 
-jQuery( function() {
+document.addEventListener( 'DOMContentLoaded', () => {
 
-    maybe_show_dra_routes();
+    dra_maybe_show_routes();
 
-    jQuery('select#dra-role').change( function() {
-        window.location.href = window.location.origin + window.location.pathname + '?page=disable_rest_api_settings&role=' + jQuery(this).val();
+    document.getElementById('dra-role').addEventListener( 'change', function() {
+        window.location.href = window.location.origin + window.location.pathname + '?page=disable_rest_api_settings&role=' + this.value;
     });
 
-    jQuery('input[name=default_allow]').change( function() {
-        maybe_show_dra_routes();
+    document.querySelectorAll('input[name=default_allow]').forEach( el => {
+        el.addEventListener( 'change', () => {
+            dra_maybe_show_routes();
+        });
     });
 
 });
