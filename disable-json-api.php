@@ -14,6 +14,8 @@
  * Domain Path: /languages
  */
 
+const DISABLE_REST_API_PLUGIN_VER = '1.8';
+
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	die;
