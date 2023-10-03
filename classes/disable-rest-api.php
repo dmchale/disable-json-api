@@ -9,7 +9,6 @@ class Disable_REST_API {
 
 	const MENU_SLUG = 'disable_rest_api_settings';
 	const CAPABILITY = 'manage_options';
-	const VERSION = '1.7';
 
 	/**
 	 * Stores 'disable-json-api/disable-json-api.php' typically
@@ -191,9 +190,9 @@ class Disable_REST_API {
 	 */
 	public function admin_enqueues( $hook_suffix ) {
 		if ( $hook_suffix == 'settings_page_' . self::MENU_SLUG ) {
-			wp_enqueue_style( 'dra-admin-css', plugins_url( 'css/admin.css', $this->base_file_path ), array(), self::VERSION, 'all' );
-			wp_enqueue_script( 'dra-admin-header', plugins_url( 'js/admin-header.js', $this->base_file_path ), array(), self::VERSION, false );
-			wp_enqueue_script( 'dra-admin-footer', plugins_url( 'js/admin-footer.js', $this->base_file_path ), array(), self::VERSION, true );
+			wp_enqueue_style( 'dra-admin-css', plugins_url( 'css/admin.css', $this->base_file_path ), array(), DISABLE_REST_API_PLUGIN_VER, 'all' );
+			wp_enqueue_script( 'dra-admin-header', plugins_url( 'js/admin-header.js', $this->base_file_path ), array( 'jquery' ), DISABLE_REST_API_PLUGIN_VER, false );
+			wp_enqueue_script( 'dra-admin-footer', plugins_url( 'js/admin-footer.js', $this->base_file_path ), array( 'jquery' ), DISABLE_REST_API_PLUGIN_VER, true );
 		}
 	}
 
@@ -313,9 +312,9 @@ class Disable_REST_API {
 
 		// Define the basic structure of our new option
 		$arr_option = array(
-			'version'       => self::VERSION,       // the current version of this plugin
-			'default_allow' => true,                // if a role is not specifically defined in the settings, should the default be to ALLOW the route or not?
-			'roles'         => array(),             // array of the user roles in this install of wordpress
+			'version'       => DISABLE_REST_API_PLUGIN_VER,     // the current version of this plugin
+			'default_allow' => true,                            // if a role is not specifically defined in the settings, should the default be to ALLOW the route or not?
+			'roles'         => array(),                         // array of the user roles in this install of wordpress
 		);
 
 		// Default list of allowed routes. By default, nothing is allowed because we're checking for our pre-v1.6 option here for migration purposes
